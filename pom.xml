@@ -53,6 +53,7 @@
         <module>waste-common</module>
         <module>waste-grpc</module>
         <module>waste-service-start</module>
+        <module>waste-database</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -184,6 +185,16 @@
                 <artifactId>commons-pool2</artifactId>
                 <version>${commons-pool2.version}</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.11.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>4.0.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
