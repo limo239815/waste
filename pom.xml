@@ -51,7 +51,6 @@
     </properties>
     <modules>
         <module>waste-common</module>
-        <module>waste-feign</module>
         <module>waste-grpc</module>
         <module>waste-service-start</module>
     </modules>
@@ -68,11 +67,6 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.limo</groupId>
-                <artifactId>waste-feign</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.boot.version}</version>
@@ -86,11 +80,6 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis.spring.boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>

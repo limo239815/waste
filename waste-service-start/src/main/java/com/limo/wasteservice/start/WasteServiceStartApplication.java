@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(scanBasePackages = {"com.limo","com.common.query.grpc","bill.service.v1"})
 @EnableAsync
-@EnableFeignClients(basePackages = "com.limo.waste.feign.api")
+@EnableFeignClients(basePackages = "com.limo")
 public class WasteServiceStartApplication {
 
     public static void main(String[] args) {

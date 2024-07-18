@@ -51,3 +51,9 @@ spring:
       connection-test-query: select now()
 server:
   port: 9600
+feign:
+    client:
+      config:
+        default:
+          connectTimeout: 5000
+          readTimeout: 5000
