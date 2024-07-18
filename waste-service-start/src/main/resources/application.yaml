@@ -1,0 +1,53 @@
+messageBusUrl: http://localhost:8012/api/msg/bus/send
+ddTenantId: 00000
+spring:
+  redis:
+    host: 47.100.125.240
+    password: forest123456
+    port: 6379
+    #Redis连接超时时间（单位：毫秒）
+    database: 0
+    lettuce:
+      pool:
+        min-idle: 5
+        max-idle: 64
+        max-active: 100
+        max-wait: 1000
+  redis2:
+    host: localhost
+    password: forest123456
+    port: 6379
+    #    port: 6380
+    #Redis连接超时时间（单位：毫秒）
+    database: 0
+    lettuce:
+      pool:
+        min-idle: 5
+        max-idle: 64
+        max-active: 100
+        max-wait: 1000
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://139.196.141.138:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    #    url: jdbc:mysql://192.168.8.37:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    #    url: jdbc:mysql://192.168.10.159:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    #password: root
+    password: admin!123456
+    #password: '@!*()Lin122916~+'
+    hikari:
+      ## 最小空闲连接数
+      minimum-idle: 5
+      #      ## 最大连接数
+      #      maximum-pool-size: 20
+      ## 自动提交
+      auto-commit: true
+      ## 连接池名称
+      pool-name: TmcHikariCP
+      ## 超时时间(ms)
+      connection-timeout: 30000
+      ## 超时测试语句
+      connection-test-query: select now()
+server:
+  port: 9600

@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.common.query.grpc";
+
+service OfbizCommon {
+  rpc PublicExec (OfbizCommonRequest) returns (OfbizCommonResponse);
+}
+
+message OfbizCommonRequest {
+  string commonData = 1;
+}
+
+message OfbizCommonResponse {
+  string returnData = 1;
+} 

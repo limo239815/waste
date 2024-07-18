@@ -1,0 +1,408 @@
+syntax = "proto3";
+option java_multiple_files = true;
+//option java_package = "bill.service.v1";
+package bill.service.v1;
+option go_package = "./api/bill/v1";
+service bill {
+  //基本服务
+  //单据保存
+  rpc commonSaveBillV2 (SaveBillReq) returns (SaveBillResp);
+  //单据删除
+  rpc commonDeleteBillV2 (DeleteBillReq) returns (DeleteBillResp);
+  //批量修改
+  rpc BatchEdit (BatchEditReq) returns (BatchEditResp);
+
+  //单据服务
+  //状态跟踪
+  rpc commonSaveStatus (StatusTrackReq) returns (StatusTrackResp);
+  //单据生成
+  rpc commonCreateBillByBill (CommonCreateReq) returns (CommonCreateResp);
+  //单据修改
+  rpc commonEditBillByBill (CommonEditReq) returns (CommonEditResp);
+  //实体修改
+  rpc entityEdit (EntityEditReq) returns (EntityEditResp);
+  //实体生成
+  rpc entityCreate(EntityCreateReq) returns (EntityCreateResp);
+  //实体删除
+  rpc entityDelete(EntityDeleteReq) returns (EntityDeleteResp);
+
+  //整体提交
+  rpc commitOperate(CommitOperateReq) returns (CommitOperateResp);
+
+  //比较条件
+  rpc compareConditions(CompareConditionsReq) returns(CompareConditionsResp);
+
+  //切换单据(待补)
+  rpc billChange(BillChangeReq) returns(BillChangeResp);
+
+  //单据查询
+  rpc billQuery(BillQueryReq) returns(BillQueryResp);
+
+  //实体查询（SQL)
+  rpc entitySqlQuery(EntitySqlQueryReq) returns(EntitySqlQueryResp);
+
+  //批量生成单据
+  rpc batchArrivalBillAuto(BatchArrivalBillAutoReq) returns(BatchArrivalBillAutoResp);
+
+  //查询临时表数据
+  rpc flowTempTableOperate(FlowTempTableOperateReq) returns(FlowTempTableOperateResp);
+
+  //来源单据编号根据条件分组
+  rpc listBillIdsGroup(ListBillIdsGroupReq) returns(ListBillIdsGroupResp);
+
+  //单据查询修改
+  rpc billQueryUpdate(BillQueryUpdateReq) returns(BillQueryUpdateResp);
+
+  //判断订单明细中的商品是否全部进行序列号录入
+  rpc billSerialNumberCheck(BillSerialNumberCheckReq) returns (BillSerialNumberCheckResp);
+
+  //方法执行
+  rpc methordExec(MethordExecReq) returns (MethordExecResp);
+
+  //通用查询
+  rpc entityCommonQueryFlow(EntityCommonQueryFlowReq) returns(EntityCommonQueryFlowResp);
+
+  //立即提交
+  rpc commitOperateExe(CommitOperateExeReq) returns (CommitOperateExeResp);
+}
+
+message FlowTempTableOperateReq {
+  string fromBillTypeId = 1;
+  string billTypeId = 2;
+  string billId = 3;
+  string mapTempTalbeString = 4;
+  string isExecStr = 5;
+  //默认用户登陆参数
+  string userLogin = 6;
+}
+
+message FlowTempTableOperateResp {
+  string responseMessage = 1;
+  string errorMessage = 2;
+  string infoMessage = 3;
+  string currBillJson = 4 ;
+  string currBillItemJson = 5;
+}
+
+message BatchArrivalBillAutoReq {
+  string operateType = 1;
+  string billTypeId = 2;
+  string currBillIdsStr = 3;
+  string userLogin = 4;
+}
+message EntityDeleteReq {
+  string billTypeId = 1;
+  string edStatus = 2;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5 ;
+  string methodName = 6 ;
+
+  //默认用户登陆参数
+  string userLogin = 7 ;
+}
+message ListBillIdsGroupReq {
+  string operateType = 1;
+  string billTypeId = 2;
+  string listBillIdsStr = 3;
+  string userLogin = 4;
+}
+
+message EntityCreateReq {
+  string billTypeId = 1 ;
+  string edStatus = 2;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5;
+  string methodName = 6 ;
+
+  //默认用户登陆参数
+  string userLogin = 7 ;
+}
+
+message BillQueryReq {
+  string billTypeId = 1;
+  string billId = 2;
+  string ddTenantId = 3;
+  string belongTenantId = 4;
+}
+
+message EntityCommonQueryFlowReq {
+  string entityGroup = 1;
+  string strSql = 2;
+  string ddTenantId = 3 ;
+}
+
+message EntitySqlQueryReq {
+  string entityGroup = 1 ;
+  string strSql = 2 ;
+  string ddTenantId = 3 ;
+}
+message BillQueryUpdateReq {
+  string billTypeId = 1 ;
+  string ddTenantId = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+  string belongTenantId = 5 ;
+}
+
+message BillSerialNumberCheckReq {
+  string ddTenantId = 1 ;
+  string billJson = 2 ;
+}
+
+
+message BillChangeReq {
+  string billTypeId = 1 ;
+  string edStatus = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5 ;
+  string methodName = 6 ;
+
+  //默认用户登陆参数
+  string userLogin = 7 ;
+  string billId = 8 ;
+}
+message CompareConditionsReq {
+  string conditions = 1;
+  string billTypeId = 2 ;
+  string ddTenantId = 3 ;
+  string billJson = 4 ;
+  string billItemJson = 5 ;
+  string billId = 6 ;
+  string userLogin = 7 ;
+}
+message CompareConditionsResp {
+  string resultOk = 1 ;
+  string resultErrorMsg = 2 ;
+}
+
+message SaveBillReq {
+  string billTypeId = 1 ;
+  string edStatus = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+  //默认用户登陆参数
+  string userLogin = 5 ;
+}
+message DeleteBillReq {
+  string billTypeId = 1 ;
+  string billId = 2 ;
+  //默认用户登陆参数
+  string userLogin = 3 ;
+}
+message BatchEditReq {
+  string billTypeId = 1 ;
+  string billIds = 2 ;
+  string billJson = 3 ;
+
+  //默认用户登陆参数
+  string userLogin = 4 ;
+}
+message CommonCreateReq {
+  string billTypeId = 1 ;
+  string edStatus = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5;
+  string methodName = 6;
+
+  //默认用户登陆参数
+  string userLogin = 7;
+  string billId = 8 ;
+}
+message MethordExecReq {
+  string billTypeId = 1 ;
+  string edStatus = 2;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5;
+  string methodName = 6 ;
+
+  //默认用户登陆参数
+  string userLogin = 7;
+  string billId = 8 ;
+}
+message StatusTrackReq {
+  string billTypeId = 1 ;
+  string billId = 2;
+  string operateType = 3;
+  //默认用户登陆参数
+  string userLogin = 4;
+}
+message CommonEditReq {
+  string billTypeId = 1;
+  string edStatus = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4;
+
+  string fromBillTypeId = 5 ;
+  string methodName = 6;
+
+  //默认用户登陆参数
+  string userLogin = 7 ;
+}
+message EntityEditReq {
+  string billTypeId = 1 ;
+  string edStatus = 2 ;
+  string billJson = 3 ;
+  string billItemJson = 4 ;
+
+  string fromBillTypeId = 5 ;
+  string methodName = 6 ;
+
+  //默认用户登陆参数
+  string userLogin = 7 ;
+  string billId = 8 ;
+}
+message CommitOperateReq {
+  //默认用户登陆参数
+  string userLogin = 1;
+}
+
+message CommitOperateExeReq {
+  //默认用户登陆参数
+  string ddTenantId = 1;
+  string sqlListStr = 2 ;
+}
+
+message BillQueryResp {
+  string billJson = 1;
+  string billItemJson = 2;
+  string resultBillId = 3;
+  string responseMessage = 4 ;
+  string errorMessage = 5;
+  string infoMessage = 6 ;
+}
+
+message EntityCommonQueryFlowResp {
+  string listJson = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+message EntitySqlQueryResp {
+  string listJson = 1 ;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+message BillQueryUpdateResp {
+  string currBillJson = 1;
+  string currBillItemJson = 2;
+  string responseMessage = 3 ;
+  string errorMessage = 4;
+  string infoMessage = 5;
+}
+
+message BillSerialNumberCheckResp {
+  string returnStr = 1 ;
+}
+
+message BatchArrivalBillAutoResp{
+  string billJson = 1;
+  string billItemJson = 2 ;
+  string resultBillId = 3 ;
+  string responseMessage = 4 ;
+  string errorMessage = 5 ;
+  string infoMessage = 6 ;
+}
+
+message ListBillIdsGroupResp{
+  string resultListStr = 1 ;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+
+
+message BillChangeResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+message SaveBillResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+  string currBillJson = 5;
+  string currBillItemJson = 6;
+  string mapTempTableStr = 7;
+}
+message DeleteBillResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message BatchEditResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+message StatusTrackResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message CommonCreateResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message MethordExecResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message CommonEditResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message EntityEditResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message EntityCreateResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+message EntityDeleteResp {
+  string resultBillId = 1;
+  string responseMessage = 2;
+  string errorMessage = 3;
+  string infoMessage = 4;
+}
+
+message CommitOperateResp {
+  string responseMessage = 1;
+  string errorMessage = 2 ;
+}
+
+message CommitOperateExeResp {
+  string responseMessage = 1 ;
+  string errorMessage = 2 ;
+}

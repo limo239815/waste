@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="logging.path"  source="logging.file.path"/>
+    <springProperty scope="context" name="logging.file" source="logging.file.name"/>
+
+    <!-- 定义日志输出格式 -->
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level [${PID:- }] --- [%16.16t] %-45.45logger:   L%line - %msg%n" />
+
+    <!-- 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 滚动文件输出，按日期和大小滚动 -->
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 如果application.yml中没有配置logging.file.path, 那么默认输出在工作目录下的logs目录-->
+        <file>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-fileLog.log}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-fileLog}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize> <!-- 每个日志文件大小限制为20MB -->
+            <maxHistory>7</maxHistory> <!-- 保留7天的日志文件 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 滚动文件输出，按日期和大小滚动 -->
+    <appender name="sqlFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 如果application.yml中没有配置logging.file.path, 那么默认输出在工作目录下的logs目录-->
+        <file>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-sqlFile.log}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-sqlFile}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize> <!-- 每个日志文件大小限制为20MB -->
+            <maxHistory>7</maxHistory> <!-- 保留7天的日志文件 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 滚动文件输出，按日期和大小滚动 -->
+    <appender name="errorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 如果application.yml中没有配置logging.file.path, 那么默认输出在工作目录下的logs目录-->
+        <file>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-errorFile.log}</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!--设置日志级别,过滤掉info日志,只输入error日志-->
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path:-/home/magic_store/logs/rcs_basic}/${logging.file:-errorFile}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize> <!-- 每个日志文件大小限制为20MB -->
+            <maxHistory>7</maxHistory> <!-- 保留7天的日志文件 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 根日志记录器，输出到控制台和滚动文件 -->
+    <root level="info">
+        <appender-ref ref="fileLog"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="errorLog"/>
+    </root>
+
+    <!--打印sql至sqlFile文件日志-->
+    <logger name="com.ms.rcs.basic.common.dal.mapper" level="DEBUG" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="sqlFile"/>
+    </logger>
+
+</configuration>
