@@ -54,6 +54,10 @@
             <artifactId>waste-grpc</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.limo</groupId>
+            <artifactId>waste-database</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>

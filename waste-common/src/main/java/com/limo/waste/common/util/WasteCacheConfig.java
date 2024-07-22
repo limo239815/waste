@@ -1,4 +1,4 @@
-package com.limo.waste.grpc.util.cache;
+package com.limo.waste.common.util;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
