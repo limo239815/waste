@@ -11,6 +11,7 @@ import com.limo.waste.common.util.TypeTransferUtil;
 import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.service.CommonUpdateService;
 import com.limo.waste.grpc.entity.*;
+import com.limo.waste.grpc.util.OperateTypeEnum;
 import com.limo.waste.grpc.util.messagebus.MessageBusEnum;
 import com.limo.waste.grpc.util.messagebus.SendMessageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -43,84 +44,84 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     RedisService redisService;
 
     @Resource
-    Cache<String,String> cacheManagerForWaste;
+    Cache<String, String> cacheManagerForWaste;
 
     @Resource
     SendMessageUtil sendMessageUtil;
 
     @Override
-    public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql){
+    public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
         try {
             //获取组别
             String key = "";
-            if (cacheManagerForWaste.asMap().containsKey(entityName+ddTenantId)){
-                key = cacheManagerForWaste.asMap().get(entityName+ddTenantId);
-            }else {
+            if (cacheManagerForWaste.asMap().containsKey(entityName + ddTenantId)) {
+                key = cacheManagerForWaste.asMap().get(entityName + ddTenantId);
+            } else {
                 CommonQueryParam param = new CommonQueryParam();
-                param.setSysPara(new SysPara().getSysPara(ddTenantId,"BusinessEntity"));
-                Map<String,Object> userPara = new HashMap<>();
-                userPara.put("entityId",entityName);
-                userPara.put("ddTenantId",ddTenantId);
+                param.setSysPara(new SysPara().getSysPara(ddTenantId, "BusinessEntity"));
+                Map<String, Object> userPara = new HashMap<>();
+                userPara.put("entityId", entityName);
+                userPara.put("ddTenantId", ddTenantId);
                 param.setUserPara(userPara);
                 List<String> fieldList = new ArrayList<>();
                 fieldList.add("entityGroup");
                 param.setAddPara(new AddPara().setFieldList(fieldList));
                 CommonQueryResult result = commonQueryService.queryAll(param);
-                if (result == null){
-                    return Result.fail(Result.FAIL_CODE,"未获取到实体组");
+                if (result == null) {
+                    return Result.fail(Result.FAIL_CODE, "未获取到实体组");
                 }
-                if (result.getResponseMessage().equals("error")){
-                    return Result.fail(Result.FAIL_CODE,result.getErrorMessage());
+                if (result.getResponseMessage().equals("error")) {
+                    return Result.fail(Result.FAIL_CODE, result.getErrorMessage());
                 }
-                if (CollectionUtils.isEmpty(result.getRows())){
-                    return Result.fail(Result.FAIL_CODE,"实体组不存在");
+                if (CollectionUtils.isEmpty(result.getRows())) {
+                    return Result.fail(Result.FAIL_CODE, "实体组不存在");
                 }
                 for (Map<String, Object> entity : result.getRows()) {
-                    if (entity.get("entityGroup")==null || entity.get("entityGroup").equals("")){
-                        return Result.fail(Result.FAIL_CODE,"实体组别不存在");
+                    if (entity.get("entityGroup") == null || entity.get("entityGroup").equals("")) {
+                        return Result.fail(Result.FAIL_CODE, "实体组别不存在");
                     }
                     key = (String) entity.get("entityGroup");
                 }
             }
-            Map<String,Object> value = new HashMap<>();
-            if (tag.equals("1")){
-                value.put(key+":",sql);
-            }else {
-                value.put(key,sql);
+            Map<String, Object> value = new HashMap<>();
+            if (tag.equals("1")) {
+                value.put(key + ":", sql);
+            } else {
+                value.put(key, sql);
             }
             //保留原始字段不转义
             Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            log.info("更新：{}【{}】",currUuid,value);
-            redisService.lPush(currUuid,gson.toJson(value));
+            log.info("更新：{}【{}】", currUuid, value);
+            redisService.lPush(currUuid, gson.toJson(value));
             return Result.success();
-        }catch (Exception e){
-            return Result.fail(Result.FAIL_CODE,e.getMessage());
+        } catch (Exception e) {
+            return Result.fail(Result.FAIL_CODE, e.getMessage());
         }
     }
 
     @Override
     public Result<Boolean> update(String currUuid, String entityName, String ddTenantId, String sql) {
-        return update("",currUuid,entityName,ddTenantId,sql);
+        return update("", currUuid, entityName, ddTenantId, sql);
     }
 
-    public Result<Boolean> commitByBillService(UserLogin userLogin){
+    public Result<Boolean> commitByBillService(UserLogin userLogin) {
         //调用go服务执行sql CommitOperateReq
         bill.service.v1.CommitOperateReq reqParam = bill.service.v1.CommitOperateReq.newBuilder().setUserLogin(new Gson().toJson(userLogin)).build();
-        log.info("更新参数：{}",reqParam);
+        log.info("更新参数：{}", reqParam);
         bill.service.v1.CommitOperateResp resp = billService.commitOperate(reqParam);
-        if (resp.getResponseMessage().equals("success")){
+        if (resp.getResponseMessage().equals("success")) {
             log.info("更新完成");
             return Result.success();
         }
-        log.error("更新失败：{}",resp.getErrorMessage());
-        return Result.fail(Result.FAIL_CODE,resp.getErrorMessage());
+        log.error("更新失败：{}", resp.getErrorMessage());
+        return Result.fail(Result.FAIL_CODE, resp.getErrorMessage());
     }
 
     @Override
-    public Result<String> commonSaveBillService(String billTypeId,Map<String, Object> order, Map<String, List<Map<String, Object>>> orderItem, UserLogin userLogin) {
+    public Result<String> commonSaveBillService(String billTypeId, Map<String, Object> order, Map<String, List<Map<String, Object>>> orderItem, UserLogin userLogin) {
         String billJson = new Gson().toJson(order);
         String billItemJson = "{}";
-        if (!CollectionUtils.isEmpty(orderItem)){
+        if (!CollectionUtils.isEmpty(orderItem)) {
             billItemJson = new Gson().toJson(orderItem);
         }
         String userLoginStr = new Gson().toJson(userLogin);
@@ -128,7 +129,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setBillJson(billJson)
                 .setBillItemJson(billItemJson)
                 .setBillTypeId(billTypeId)
-                .setEdStatus("create")
+                .setEdStatus(OperateTypeEnum.CREATE.getCode())
                 .setUserLogin(userLoginStr)
                 .build();
         bill.service.v1.SaveBillResp saveBillResp = billService.commonSaveBillV2(saveBillReq);
@@ -139,7 +140,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         return Result.success(saveBillResp.getResultBillId());
     }
 
-    public Result<Boolean> commonDeleteBillService(String billTypeId,String billId, UserLogin userLogin) {
+    public Result<Boolean> commonDeleteBillService(String billTypeId, String billId, UserLogin userLogin) {
         String userLoginStr = new Gson().toJson(userLogin);
         bill.service.v1.DeleteBillReq deleteBillReq = bill.service.v1.DeleteBillReq.newBuilder()
                 .setBillId(billId)
@@ -153,6 +154,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         }
         return Result.success();
     }
+
     @Override
     public Result<Boolean> autoSendAudit(String msgId, String ddTenantId, List<String> billIds, String billTypeId, String billTypeName) {
         List<Map<String, Object>> billIdList = new ArrayList<>();
@@ -163,15 +165,11 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             billIdList.add(billIdMap);
         }
         String billIdStr = new Gson().toJson(billIdList);
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId);
+        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.BATCH_SEND_CHECK.getKey());
         autoCheckParam.setBillIds(billIdStr)
                 .setBillId("")
-                .setOperateType("19")
-                .setEdStatus("view")
                 .setBillItemJson("N")
-                .setBillJson("N")
-                .setBillTypeName(billTypeName)
-                .setBillTypeId(billTypeId);
+                .setBillJson("N");
         return sendMessageUtil.send(MessageBusEnum.AUTO_CHECK, msgId, new Gson().toJson(autoCheckParam));
     }
 
@@ -185,15 +183,11 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             billIdList.add(billIdMap);
         }
         String billIdStr = new Gson().toJson(billIdList);
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId);
+        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.UNCHECK.getKey());
         autoCheckParam.setBillIds(billIdStr)
                 .setBillId("")
-                .setOperateType("26")
-                .setEdStatus("view")
                 .setBillItemJson("N")
-                .setBillJson("N")
-                .setBillTypeName(billTypeName)
-                .setBillTypeId(billTypeId);
+                .setBillJson("N");
         return sendMessageUtil.send(MessageBusEnum.AUTO_CHECK, msgId, new Gson().toJson(autoCheckParam));
     }
 
@@ -205,15 +199,11 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             mapWorkOrderItem.put(itemEntityId, billJsonItem);
             billItemJson = new Gson().toJson(mapWorkOrderItem);
         }
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId);
+        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonDeleteParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.DELETE.getKey());
         autoCheckParam.setBillIds("[]")
                 .setBillId(billId)
-                .setOperateType("3")
-                .setEdStatus("delete")
                 .setBillItemJson(billItemJson)
-                .setBillJson(new Gson().toJson(billJson))
-                .setBillTypeName(billTypeName)
-                .setBillTypeId(billTypeId);
+                .setBillJson(new Gson().toJson(billJson));
         return sendMessageUtil.send(MessageBusEnum.AUTO_CHECK, msgId, new Gson().toJson(autoCheckParam));
     }
 
@@ -276,20 +266,21 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         if (Result.FAIL_CODE.equals(ResultForSave.getResultCode())) {
             return Result.fail(Result.FAIL_CODE, ResultForSave.getResultMessage());
         }
-        if (initStatus){
+        if (initStatus) {
             String[] value = ResultForSave.getResultValue().split(":");
-            String updateSql = "update "+ TypeTransferUtil.camelToSnake(entityId) +" set status_id='INIT',status_name='草稿' where "+TypeTransferUtil.camelToSnake(value[0])+"='" +value[1] + "' and dd_tenant_id='" + ddTenantId + "'";
+            String updateSql = "update " + TypeTransferUtil.camelToSnake(entityId) + " set status_id='INIT',status_name='草稿' where " + TypeTransferUtil.camelToSnake(value[0]) + "='" + value[1] + "' and dd_tenant_id='" + ddTenantId + "'";
             Result<Boolean> result = update(currUuid, entityId, ddTenantId, updateSql);
             if (Result.FAIL_CODE.equals(result.getResultCode())) {
-                return Result.fail(Result.FAIL_CODE,result.getResultMessage());
+                return Result.fail(Result.FAIL_CODE, result.getResultMessage());
             }
         }
         Result<Boolean> result = commitByBillService(userLogin);
         if (Result.FAIL_CODE.equals(result.getResultCode())) {
-            return Result.fail(Result.FAIL_CODE,result.getResultMessage());
+            return Result.fail(Result.FAIL_CODE, result.getResultMessage());
         }
         return Result.success(ResultForSave.getResultValue());
     }
+
     @Override
     public Result<Boolean> orderSave(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
         UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
@@ -307,12 +298,12 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         if (Result.FAIL_CODE.equals(ResultForSave.getResultCode())) {
             return Result.fail(Result.FAIL_CODE, ResultForSave.getResultMessage());
         }
-        if (initStatus){
+        if (initStatus) {
             String[] value = ResultForSave.getResultValue().split(":");
-            String updateSql = "update "+ TypeTransferUtil.camelToSnake(entityId) +" set status_id='INIT',status_name='草稿' where "+TypeTransferUtil.camelToSnake(value[0])+"='" +value[1] + "' and dd_tenant_id='" + ddTenantId + "'";
+            String updateSql = "update " + TypeTransferUtil.camelToSnake(entityId) + " set status_id='INIT',status_name='草稿' where " + TypeTransferUtil.camelToSnake(value[0]) + "='" + value[1] + "' and dd_tenant_id='" + ddTenantId + "'";
             Result<Boolean> result = update(currUuid, entityId, ddTenantId, updateSql);
             if (Result.FAIL_CODE.equals(result.getResultCode())) {
-                return Result.fail(Result.FAIL_CODE,result.getResultMessage());
+                return Result.fail(Result.FAIL_CODE, result.getResultMessage());
             }
         }
         return commitByBillService(userLogin);

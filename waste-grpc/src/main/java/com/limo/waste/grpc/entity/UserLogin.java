@@ -1,6 +1,7 @@
 package com.limo.waste.grpc.entity;
 
-import com.limo.waste.grpc.util.TenantUtil;
+import com.limo.waste.grpc.util.CommonUtil;
+import com.limo.waste.grpc.util.UserUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
@@ -39,18 +40,31 @@ public class UserLogin {
     private String businessSystemId;
     private String wareHouseId;
     private String wareHouseName;
+    private String accessToken;
 
-    public UserLogin getUserLogin(String ddTenantId){
-        if (StringUtils.hasLength(ddTenantId)){
+    public UserLogin getUserLogin(String ddTenantId) {
+        if (StringUtils.hasLength(ddTenantId)) {
             this.ddTenantId = ddTenantId;
-        }else {
-            this.ddTenantId =new TenantUtil().getDefaultDdTenantId();
+        } else {
+            this.ddTenantId = new CommonUtil().getDefaultDdTenantId();
         }
-        this.userLoginId = "wes";
-        this.userLoginDisId="wes";
-        this.userLoginName="wes";
-        this.wareHouseId="10000";
-        this.wareHouseName="智能仓";
+        if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
+            User user = new UserUtil().getUser(new User().setEmployeeId("location").setDdTenantId(this.ddTenantId));
+            this.userLoginId = user.getUserId();
+            this.userLoginDisId = user.getUserId();
+            this.userLoginName = user.getEmployeeName();
+            this.accessToken = user.getAccessToken();
+            Warehouse warehouse = new UserUtil().getWarehouse(this.ddTenantId);
+            this.wareHouseId = warehouse.getWareHouseId();
+            this.wareHouseName = warehouse.getWareHouseName();
+        }else {
+            this.userLoginId = "wes";
+            this.userLoginDisId = "wes";
+            this.userLoginName = "wes";
+            this.wareHouseId = "10000";
+            this.wareHouseName = "智能仓";
+        }
+
         return this;
     }
 }
