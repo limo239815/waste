@@ -5,7 +5,8 @@ import com.limo.waste.database.dal.Column;
 import com.limo.waste.database.dal.DatabaseConfig;
 import com.limo.waste.database.dal.Table;
 import com.limo.waste.database.service.ds.DatabaseInitializer;
-import com.limo.waste.grpc.entity.User;
+import com.limo.waste.grpc.entity.*;
+import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.util.CommonUtil;
 import com.limo.waste.grpc.util.UserUtil;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @SpringBootTest
@@ -69,6 +72,19 @@ class WasteServiceStartApplicationTests {
     public void test3(){
         User user = userUtil.getUser(new User().setEmployeeId("20230714001").setDdTenantId("00000"));
         System.out.println(user);
+    }
+    @Resource
+    CommonQueryService commonQueryService;
+
+    @Test
+    public void test4(){
+        Map<String, Object> userPara = new HashMap<>();
+        userPara.put("ddTenantId", "00000");
+        CommonQueryResult result = commonQueryService.queryAll(new CommonQueryParam()
+                .setSysPara(new SysPara().getSysPara("00000","StocktakingStrategy"))
+        .setUserPara(userPara).setAddPara(new AddPara().setPagination(new Pagination()
+                .setPage(1).setCurrent(1).setPageSize(10).setTotal(1))));
+        System.out.println(result);
     }
 
 }
