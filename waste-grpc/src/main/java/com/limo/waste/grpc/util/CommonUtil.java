@@ -17,6 +17,7 @@ public class CommonUtil {
     private String defaultDdTenantId;
     private String employeeId;
     private String useToken;
+    private String goUrl;
 
     public CommonUtil() {
         // 加载配置文件
@@ -29,6 +30,7 @@ public class CommonUtil {
                 this.defaultDdTenantId = properties.getProperty("ddTenantId").replace("\"","");
                 this.employeeId = properties.getProperty("employeeId").replace("\"","");
                 this.useToken = properties.getProperty("useToken").replace("\"","");
+                this.goUrl = properties.getProperty("goUrl").replace("\"","");
             } else {
                 log.error("无法找到application.yaml文件");
                 this.defaultDdTenantId = "00000";

@@ -2,6 +2,8 @@ package com.limo.waste.grpc.service;
 
 
 import com.limo.waste.common.util.Result;
+import com.limo.waste.grpc.entity.OrderOperateParam;
+import com.limo.waste.grpc.entity.OrderSaveByFlowParam;
 import com.limo.waste.grpc.entity.UserLogin;
 
 import java.util.List;
@@ -95,4 +97,9 @@ public interface CommonUpdateService {
      * @param initStatus        是否初始化状态
      */
     Result<Boolean> orderSave(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus);
+
+    /**
+     * 单据保存（走流程）
+     * */
+    <H,I> Result<Boolean> orderSaveByFlow(OrderOperateParam<H,I> order);
 }

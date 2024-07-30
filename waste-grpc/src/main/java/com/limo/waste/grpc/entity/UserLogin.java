@@ -42,6 +42,9 @@ public class UserLogin {
     private String wareHouseName;
     private String accessToken;
 
+    private String appKey="7_3couvjpeukmc4wc88ww00s8c0cc4wcswc8404oow8ogwksgcck";
+    private String secret="4kztndqf54sgowkcs8kw404c0kc04c0gsgwog8gogwwc8kk8kc";
+
     public UserLogin getUserLogin(String ddTenantId) {
         if (StringUtils.hasLength(ddTenantId)) {
             this.ddTenantId = ddTenantId;
@@ -50,6 +53,31 @@ public class UserLogin {
         }
         if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
             User user = new UserUtil().getUser(new User().setEmployeeId("location").setDdTenantId(this.ddTenantId));
+            this.userLoginId = user.getUserId();
+            this.userLoginDisId = user.getUserId();
+            this.userLoginName = user.getEmployeeName();
+            this.accessToken = user.getAccessToken();
+            Warehouse warehouse = new UserUtil().getWarehouse(this.ddTenantId);
+            this.wareHouseId = warehouse.getWareHouseId();
+            this.wareHouseName = warehouse.getWareHouseName();
+        }else {
+            this.userLoginId = "wes";
+            this.userLoginDisId = "wes";
+            this.userLoginName = "wes";
+            this.wareHouseId = "10000";
+            this.wareHouseName = "智能仓";
+        }
+
+        return this;
+    }
+    public UserLogin getUserLogin(String ddTenantId,String employeeId) {
+        if (StringUtils.hasLength(ddTenantId)) {
+            this.ddTenantId = ddTenantId;
+        } else {
+            this.ddTenantId = new CommonUtil().getDefaultDdTenantId();
+        }
+        if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
+            User user = new UserUtil().getUser(new User().setEmployeeId(employeeId).setDdTenantId(this.ddTenantId));
             this.userLoginId = user.getUserId();
             this.userLoginDisId = user.getUserId();
             this.userLoginName = user.getEmployeeName();

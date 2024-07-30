@@ -55,7 +55,7 @@ public class DynamicDataSourceConfig implements TransactionManagementConfigurer 
     /**
      * 组装默认配置的数据源，查询数据库配置
      */
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         DriverManagerDataSource dds = new DriverManagerDataSource();
         dds.setUrl(dataSourceProperties.getUrl());

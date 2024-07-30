@@ -1,0 +1,8 @@
+// 累加某一列的值
+item.stream().map(CountingItem::getQty)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+//根据某一列分组
+records.stream()
+            .map(Record::getCategory)
+            .distinct()
+            .count()

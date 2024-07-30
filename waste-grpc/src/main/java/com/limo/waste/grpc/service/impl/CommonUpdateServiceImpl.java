@@ -4,13 +4,11 @@ import bill.service.v1.billGrpc;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.limo.waste.common.util.IDUtils;
-import com.limo.waste.common.util.RedisService;
-import com.limo.waste.common.util.Result;
-import com.limo.waste.common.util.TypeTransferUtil;
+import com.limo.waste.common.util.*;
 import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.service.CommonUpdateService;
 import com.limo.waste.grpc.entity.*;
+import com.limo.waste.grpc.util.CommonUtil;
 import com.limo.waste.grpc.util.OperateTypeEnum;
 import com.limo.waste.grpc.util.messagebus.MessageBusEnum;
 import com.limo.waste.grpc.util.messagebus.SendMessageUtil;
@@ -48,6 +46,9 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Resource
     SendMessageUtil sendMessageUtil;
+
+    @Resource
+    HttpUtil httpUtil;
 
     @Override
     public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
@@ -307,5 +308,30 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             }
         }
         return commitByBillService(userLogin);
+    }
+
+    @Override
+    public <H,I> Result<Boolean> orderSaveByFlow(OrderOperateParam<H,I> order) {
+        Map<String,Object> billItemJson = new HashMap<>();
+        billItemJson.put(order.getItemEntityId(),TypeTransferUtil.toMapList(order.getItems()));
+        UserLogin userLogin = new UserLogin().getUserLogin(order.getDdTenantId(), order.getEmployeeId());
+        OrderSaveByFlowParam param = new OrderSaveByFlowParam()
+                .setBillTypeId(order.getBillTypeId())
+                .setBillTypeName(order.getBillTypeName())
+                .setOperateType(OperateTypeEnum.CREATE.getKey())
+                .setUserId(userLogin.getUserLoginId())
+                .setUserName(userLogin.getUserLoginName())
+                .setAccessToken(userLogin.getAccessToken())
+                .setAppKey(userLogin.getAppKey())
+                .setSecret(userLogin.getSecret())
+                .setDdTenantId(order.getDdTenantId())
+                .setWarehouseId(userLogin.getWareHouseId())
+                .setBillJson(new Gson().toJson(TypeTransferUtil.toMap(order.getBill())))
+                .setBillItemJson(new Gson().toJson(billItemJson));
+        Result<?> result = httpUtil.postForBill(new CommonUtil().getGoUrl(),new Gson().toJson(param));
+        if (Result.FAIL_CODE.equals(result.getResultCode())){
+            return Result.fail(result.getResultCode(),result.getResultMessage());
+        }
+        return Result.success();
     }
 }

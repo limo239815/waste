@@ -1,11 +1,12 @@
 messageBusUrl: http://localhost:8012/api/msg/bus/send
 ddTenantId: "00000"
-goUrl: http://127.0.0.1:8001/ddapi/outerService/request
+goUrl: http://127.0.0.1:9800/ddapi/outerService/request
 employeeId: wes
 useToken: no
 spring:
   redis:
-    host: 47.100.125.240
+    #host: 47.100.125.240
+    host: 127.0.0.1
     password: forest123456
     port: 6379
     #Redis连接超时时间（单位：毫秒）
@@ -31,13 +32,11 @@ spring:
         max-wait: 1000
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    # url: jdbc:mysql://139.196.141.138:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    url: jdbc:mysql://47.100.125.240:3306/erpmain?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    # url: jdbc:mysql://localhost:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    #url: jdbc:mysql://139.196.141.138:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    #url: jdbc:mysql://47.100.125.240:3306/erpmain?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/magic_rcs?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: root
-    #password: root
     password: admin!123456
-    #password: '@!*()Lin122916~+'
     hikari:
       max-lifetime: 60000
       maximum-pool-size: 5
