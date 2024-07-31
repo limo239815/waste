@@ -1,11 +1,8 @@
 package com.limo.waste.grpc.entity;
 
 import com.limo.waste.grpc.util.CommonConstant;
-import com.limo.waste.grpc.util.CommonUtil;
 import com.limo.waste.grpc.util.OperateTypeEnum;
-import com.limo.waste.grpc.util.UserUtil;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
 /**
  * @Author limo
@@ -34,38 +31,62 @@ public class SysPara {
     private String clientType;
     private String accessToken;
     private String method;
-    public void getSysPara(){
+
+    public SysPara(String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken){
+        init();
+        this.accessToken = accessToken;
+        this.userId = userId;
+        this.userName = userName;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.currentPassword = currentPassword;
+    }
+    public SysPara(String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken,String entityName){
+        init();
+        this.accessToken = accessToken;
+        this.userId = userId;
+        this.userName = userName;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.currentPassword = currentPassword;
+        this.entityName = entityName;
+    }
+    private void init(){
         this.setMethod("queryGenericReadData");
         this.setFindDefault("N");
         this.setClientType("web");
         this.setAppKey(CommonConstant.APP_KEY);
         this.setOperateType(Integer.parseInt(OperateTypeEnum.QUERY.getKey()));
         this.setSecret(CommonConstant.SECRET);
-        if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
-            User user = new UserUtil().getUser(new User().setDdTenantId(this.tenantId).setEmployeeId(new CommonUtil().getEmployeeId()));
-            this.setAccessToken(user.getAccessToken());
-            this.setUserId(user.getUserId());
-            this.setUserName(user.getEmployeeName());
-            this.setCurrentPassword(user.getUserPassword());
-            this.setEmployeeId(user.getEmployeeId());
-            this.setEmployeeName(user.getEmployeeName());
-        }else {
-            this.setAccessToken("undefinedNODEFINE");
-            this.setUserId("18811391133");
-            this.setUserName("location");
-            this.setCurrentPassword("$SHA$hcAC9dhBjTXBlr$C1AtlucqsGiJ6HTNfu-S8Jq3eE8");
-            this.setEmployeeId("10010");
-            this.setEmployeeName("location");
-        }
-
     }
-    public SysPara getSysPara(String tenantId,String entityName){
+    public SysPara(){
+        init();
+        this.setAccessToken("undefinedNODEFINE");
+        this.setUserId("18811391133");
+        this.setUserName("location");
+        this.setCurrentPassword("$SHA$hcAC9dhBjTXBlr$C1AtlucqsGiJ6HTNfu-S8Jq3eE8");
+        this.setEmployeeId("10010");
+        this.setEmployeeName("location");
+    }
+    public SysPara(String ddTenantId){
+        init();
+        this.setAccessToken("undefinedNODEFINE");
+        this.setUserId("18811391133");
+        this.setUserName("location");
+        this.setCurrentPassword("$SHA$hcAC9dhBjTXBlr$C1AtlucqsGiJ6HTNfu-S8Jq3eE8");
+        this.setEmployeeId("10010");
+        this.setEmployeeName("location");
+        this.tenantId = ddTenantId;
+    }
+    public SysPara(String ddTenantId,String entityName){
+        init();
+        this.setAccessToken("undefinedNODEFINE");
+        this.setUserId("18811391133");
+        this.setUserName("location");
+        this.setCurrentPassword("$SHA$hcAC9dhBjTXBlr$C1AtlucqsGiJ6HTNfu-S8Jq3eE8");
+        this.setEmployeeId("10010");
+        this.setEmployeeName("location");
+        this.tenantId = ddTenantId;
         this.entityName = entityName;
-        if (!StringUtils.hasLength(tenantId)){
-            tenantId = new CommonUtil().getDefaultDdTenantId();
-        }
-        this.tenantId = tenantId;
-        getSysPara();
-        return this;
     }
 }

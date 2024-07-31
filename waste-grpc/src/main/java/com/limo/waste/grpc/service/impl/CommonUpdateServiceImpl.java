@@ -8,8 +8,7 @@ import com.limo.waste.common.util.*;
 import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.service.CommonUpdateService;
 import com.limo.waste.grpc.entity.*;
-import com.limo.waste.grpc.util.CommonUtil;
-import com.limo.waste.grpc.util.OperateTypeEnum;
+import com.limo.waste.grpc.util.*;
 import com.limo.waste.grpc.util.messagebus.MessageBusEnum;
 import com.limo.waste.grpc.util.messagebus.SendMessageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +49,15 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     @Resource
     HttpUtil httpUtil;
 
+    @Resource
+    SysParaUtil sysParaUtil;
+
+    @Resource
+    UserUtil userUtil;
+
+    @Resource
+    CommonUpdateParamUtil commonUpdateParamUtil;
+
     @Override
     public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
         try {
@@ -59,7 +67,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 key = cacheManagerForWaste.asMap().get(entityName + ddTenantId);
             } else {
                 CommonQueryParam param = new CommonQueryParam();
-                param.setSysPara(new SysPara().getSysPara(ddTenantId, "BusinessEntity"));
+                param.setSysPara(sysParaUtil.initSysPara(ddTenantId, "BusinessEntity"));
                 Map<String, Object> userPara = new HashMap<>();
                 userPara.put("entityId", entityName);
                 userPara.put("ddTenantId", ddTenantId);
@@ -166,7 +174,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             billIdList.add(billIdMap);
         }
         String billIdStr = new Gson().toJson(billIdList);
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.BATCH_SEND_CHECK.getKey());
+        CommonUpdateParam autoCheckParam = commonUpdateParamUtil.initCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.BATCH_SEND_CHECK.getKey());
         autoCheckParam.setBillIds(billIdStr)
                 .setBillId("")
                 .setBillItemJson("N")
@@ -184,7 +192,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             billIdList.add(billIdMap);
         }
         String billIdStr = new Gson().toJson(billIdList);
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.UNCHECK.getKey());
+        CommonUpdateParam autoCheckParam = commonUpdateParamUtil.initCommonUpdateParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.UNCHECK.getKey());
         autoCheckParam.setBillIds(billIdStr)
                 .setBillId("")
                 .setBillItemJson("N")
@@ -200,7 +208,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
             mapWorkOrderItem.put(itemEntityId, billJsonItem);
             billItemJson = new Gson().toJson(mapWorkOrderItem);
         }
-        CommonUpdateParam autoCheckParam = new CommonUpdateParam().getCommonDeleteParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.DELETE.getKey());
+        CommonUpdateParam autoCheckParam = commonUpdateParamUtil.initCommonDeleteParam(ddTenantId, billTypeId, billTypeName, OperateTypeEnum.DELETE.getKey());
         autoCheckParam.setBillIds("[]")
                 .setBillId(billId)
                 .setBillItemJson(billItemJson)
@@ -210,7 +218,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> orderDelete(boolean commit, String currUuid, String ddTenantId, List<String> billIds, String billTypeId) {
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         if (!StringUtils.hasLength(currUuid)) {
             currUuid = IDUtils.getUuid("location:");
         }
@@ -233,7 +241,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         if (CollectionUtils.isEmpty(sqlList)) {
             return Result.success();
         }
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         if (!StringUtils.hasLength(currUuid)) {
             currUuid = IDUtils.getUuid("location:");
         }
@@ -252,7 +260,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<String> orderSaveReturnPrimaryKey(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         String currUuid = IDUtils.getUuid("location:");
         userLogin.setCurrUuid(currUuid);
         mapWorkOrder.put("userId", userLogin.getUserLoginId());
@@ -284,7 +292,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> orderSave(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         String currUuid = IDUtils.getUuid("location:");
         userLogin.setCurrUuid(currUuid);
         mapWorkOrder.put("userId", userLogin.getUserLoginId());
@@ -314,7 +322,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     public <H,I> Result<Boolean> orderSaveByFlow(OrderOperateParam<H,I> order) {
         Map<String,Object> billItemJson = new HashMap<>();
         billItemJson.put(order.getItemEntityId(),TypeTransferUtil.toMapList(order.getItems()));
-        UserLogin userLogin = new UserLogin().getUserLogin(order.getDdTenantId(), order.getEmployeeId());
+        UserLogin userLogin = userUtil.initUserLogin(order.getDdTenantId());
         OrderSaveByFlowParam param = new OrderSaveByFlowParam()
                 .setBillTypeId(order.getBillTypeId())
                 .setBillTypeName(order.getBillTypeName())

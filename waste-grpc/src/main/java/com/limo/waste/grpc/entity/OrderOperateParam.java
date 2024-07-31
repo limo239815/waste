@@ -20,21 +20,9 @@ public class OrderOperateParam<H,I> {
     private String billTypeId;
     private String billTypeName;
     /**
-     * 操作号
-     * */
-    private String operateType;
-    /**
-     * 用户ID
-     * */
-    private String employeeId;
-    /**
      * 租户
      * */
     private String ddTenantId;
-    /**
-     * 仓库
-     * */
-    private String warehouseId;
     /**
      * 头实体
      * */

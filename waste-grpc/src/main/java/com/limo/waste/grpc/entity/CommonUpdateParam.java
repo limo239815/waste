@@ -41,45 +41,38 @@ public class CommonUpdateParam {
     private String secret;
     private String accessToken;
 
-    public CommonUpdateParam getCommonUpdateParam(String ddTenantId,String billTypeId,String billTypeName,String operateType){
-        if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = new CommonUtil().getDefaultDdTenantId();
-        }
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+    public CommonUpdateParam(){}
+
+    public CommonUpdateParam(String ddTenantId,String billTypeId,String billTypeName,String operateType,String userId,String userName,String wareHouseId,String accessToken){
         this.billTypeId = billTypeId;
         this.billTypeName = billTypeName;
         this.operateType = operateType;
-        this.userId = userLogin.getUserLoginId();
-        this.userName = userLogin.getUserLoginName();
-        this.wareHouseId = userLogin.getWareHouseId();
+        this.userId = userId;
+        this.userName = userName;
+        this.wareHouseId = wareHouseId;
         if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
             this.tenantId = ddTenantId;
             this.appKey = CommonConstant.APP_KEY;
             this.secret = CommonConstant.SECRET;
-            this.accessToken = userLogin.getAccessToken();
+            this.accessToken = accessToken;
         }else {
             this.methord = "saveTask";
             this.edStatus= OperateTypeEnum.VIEW.getCode();
             this.key = "93785204";
         }
-        return this;
     }
-    public CommonUpdateParam getCommonDeleteParam(String ddTenantId,String billTypeId,String billTypeName,String operateType){
-        if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = new CommonUtil().getDefaultDdTenantId();
-        }
-        UserLogin userLogin = new UserLogin().getUserLogin(ddTenantId);
+    public CommonUpdateParam getCommonDeleteParam(String ddTenantId,String billTypeId,String billTypeName,String operateType,String userId,String userName,String wareHouseId,String accessToken){
         this.billTypeId = billTypeId;
         this.billTypeName = billTypeName;
         this.operateType = operateType;
-        this.userId = userLogin.getUserLoginId();
-        this.userName = userLogin.getUserLoginName();
-        this.wareHouseId = userLogin.getWareHouseId();
-        if (new CommonUtil().getUseToken().equalsIgnoreCase("yes")){
+        this.userId = userId;
+        this.userName = userName;
+        this.wareHouseId = wareHouseId;
+        if (StringUtils.hasLength(accessToken)){
             this.tenantId = ddTenantId;
             this.appKey = CommonConstant.APP_KEY;
             this.secret = CommonConstant.SECRET;
-            this.accessToken = userLogin.getAccessToken();
+            this.accessToken = accessToken;
         }else {
             this.methord = "saveTask";
             this.edStatus="delete";

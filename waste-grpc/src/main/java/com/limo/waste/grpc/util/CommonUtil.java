@@ -2,24 +2,46 @@ package com.limo.waste.grpc.util;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+/* 貌似会死循环
 import java.io.InputStream;
-import java.util.Properties;
+import java.util.Properties;*/
 
 /**
  * @Author limo
  * @Date 2024/6/27 15:53
  * @Description:
  */
-@Slf4j
-@Data
+@Component
 public class CommonUtil {
+    @Value("${ddTenantId}")
     private String defaultDdTenantId;
+    @Value("${employeeId}")
     private String employeeId;
+    @Value("${useToken}")
     private String useToken;
+    @Value("${goUrl}")
     private String goUrl;
 
-    public CommonUtil() {
+    public String getUseToken() {
+        return useToken;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public String getDefaultDdTenantId() {
+        return defaultDdTenantId;
+    }
+
+    public String getGoUrl() {
+        return goUrl;
+    }
+    /* 貌似会死循环
+   public CommonUtil() {
         // 加载配置文件
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.yaml")) {
@@ -40,5 +62,5 @@ public class CommonUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
