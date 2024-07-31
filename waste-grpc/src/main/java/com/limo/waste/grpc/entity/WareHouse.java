@@ -8,7 +8,7 @@ import lombok.Data;
  * @Description: 仓库
  */
 @Data
-public class Warehouse {
+public class WareHouse {
 
     private String wareHouseId;
     private String wareHouseName;

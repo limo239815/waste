@@ -77,7 +77,8 @@ class WasteServiceStartApplicationTests {
         /*User user = userUtil.getUser(new User().setEmployeeId("20230714001").setDdTenantId("00000"));
         System.out.println(user);*/
 
-        System.out.println(sysParaUtil.initSysPara("00000","Counting"));
+        //System.out.println(sysParaUtil.initSysPara("00000","Counting"));
+        System.out.println(userUtil.getWarehouse("00000"));
     }
     @Resource
     CommonQueryService commonQueryService;

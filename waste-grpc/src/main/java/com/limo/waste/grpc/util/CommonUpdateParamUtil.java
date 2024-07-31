@@ -18,16 +18,19 @@ public class CommonUpdateParamUtil {
     @Resource
     UserUtil userUtil;
 
+    @Resource
+    CommonUtil commonUtil;
+
     public CommonUpdateParam initCommonUpdateParam(String ddTenantId, String billTypeId, String billTypeName, String operateType){
         if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = new CommonUtil().getDefaultDdTenantId();
+            ddTenantId = commonUtil.getDefaultDdTenantId();
         }
         UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         return new CommonUpdateParam(ddTenantId,billTypeId,billTypeName,operateType,userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(),userLogin.getAccessToken());
     }
     public CommonUpdateParam initCommonDeleteParam(String ddTenantId,String billTypeId,String billTypeName,String operateType){
         if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = new CommonUtil().getDefaultDdTenantId();
+            ddTenantId =commonUtil.getDefaultDdTenantId();
         }
         UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         return new CommonUpdateParam().getCommonDeleteParam(ddTenantId,billTypeId,billTypeName,operateType,userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(),userLogin.getAccessToken());

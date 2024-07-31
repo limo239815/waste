@@ -32,7 +32,7 @@ public class SysPara {
     private String accessToken;
     private String method;
 
-    public SysPara(String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken){
+    public SysPara(String ddTenantId,String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken){
         init();
         this.accessToken = accessToken;
         this.userId = userId;
@@ -40,8 +40,9 @@ public class SysPara {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.currentPassword = currentPassword;
+        this.tenantId = ddTenantId;
     }
-    public SysPara(String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken,String entityName){
+    public SysPara(String ddTenantId,String userId,String userName,String currentPassword,String employeeId,String employeeName,String accessToken,String entityName){
         init();
         this.accessToken = accessToken;
         this.userId = userId;
@@ -50,6 +51,7 @@ public class SysPara {
         this.employeeName = employeeName;
         this.currentPassword = currentPassword;
         this.entityName = entityName;
+        this.tenantId = ddTenantId;
     }
     private void init(){
         this.setMethod("queryGenericReadData");
@@ -59,15 +61,7 @@ public class SysPara {
         this.setOperateType(Integer.parseInt(OperateTypeEnum.QUERY.getKey()));
         this.setSecret(CommonConstant.SECRET);
     }
-    public SysPara(){
-        init();
-        this.setAccessToken("undefinedNODEFINE");
-        this.setUserId("18811391133");
-        this.setUserName("location");
-        this.setCurrentPassword("$SHA$hcAC9dhBjTXBlr$C1AtlucqsGiJ6HTNfu-S8Jq3eE8");
-        this.setEmployeeId("10010");
-        this.setEmployeeName("location");
-    }
+    public SysPara(){}
     public SysPara(String ddTenantId){
         init();
         this.setAccessToken("undefinedNODEFINE");

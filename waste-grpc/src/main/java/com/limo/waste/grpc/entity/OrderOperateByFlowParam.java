@@ -2,16 +2,15 @@ package com.limo.waste.grpc.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import java.util.Map;
 
 /**
  * @Author limo
  * @Date 2024/7/30 14:04
- * @Description: 单据保存（走流程）参数
+ * @Description: 单据操作（走流程）参数
  */
 @Accessors(chain = true)
 @Data
-public class OrderSaveByFlowParam {
+public class OrderOperateByFlowParam {
     /**
      * 单据类型
      * */
@@ -32,11 +31,11 @@ public class OrderSaveByFlowParam {
     /**
      * 租户
      * */
-    private String ddTenantId;
+    private String tenantId;
     /**
      * 仓库
      * */
-    private String warehouseId;
+    private String wareHouseId;
     /**
      * 单头
      * */

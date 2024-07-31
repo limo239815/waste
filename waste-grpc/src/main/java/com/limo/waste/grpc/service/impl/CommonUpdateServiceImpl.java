@@ -58,6 +58,9 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     @Resource
     CommonUpdateParamUtil commonUpdateParamUtil;
 
+    @Resource
+    CommonUtil commonUtil;
+
     @Override
     public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
         try {
@@ -323,7 +326,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         Map<String,Object> billItemJson = new HashMap<>();
         billItemJson.put(order.getItemEntityId(),TypeTransferUtil.toMapList(order.getItems()));
         UserLogin userLogin = userUtil.initUserLogin(order.getDdTenantId());
-        OrderSaveByFlowParam param = new OrderSaveByFlowParam()
+        OrderOperateByFlowParam param = new OrderOperateByFlowParam()
                 .setBillTypeId(order.getBillTypeId())
                 .setBillTypeName(order.getBillTypeName())
                 .setOperateType(OperateTypeEnum.CREATE.getKey())
@@ -332,11 +335,11 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setAccessToken(userLogin.getAccessToken())
                 .setAppKey(userLogin.getAppKey())
                 .setSecret(userLogin.getSecret())
-                .setDdTenantId(order.getDdTenantId())
-                .setWarehouseId(userLogin.getWareHouseId())
+                .setTenantId(StringUtils.hasLength(order.getDdTenantId())?order.getDdTenantId():commonUtil.getDefaultDdTenantId())
+                .setWareHouseId(userLogin.getWareHouseId())
                 .setBillJson(new Gson().toJson(TypeTransferUtil.toMap(order.getBill())))
                 .setBillItemJson(new Gson().toJson(billItemJson));
-        Result<?> result = httpUtil.postForBill(new CommonUtil().getGoUrl(),new Gson().toJson(param));
+        Result<?> result = httpUtil.postForBill(commonUtil.getGoUrl(),new Gson().toJson(param));
         if (Result.FAIL_CODE.equals(result.getResultCode())){
             return Result.fail(result.getResultCode(),result.getResultMessage());
         }

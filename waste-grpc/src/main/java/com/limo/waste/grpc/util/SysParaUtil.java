@@ -19,20 +19,20 @@ public class SysParaUtil {
     @Resource
     CommonUtil commonUtil;
 
-    public SysPara initSysPara(String ddTenantId){
-        if (commonUtil.getUseToken().equalsIgnoreCase("yes")){
+    public SysPara initSysPara(String ddTenantId) {
+        if (commonUtil.getUseToken().equalsIgnoreCase("yes")) {
             User user = userUtil.getUser(new User().setDdTenantId(ddTenantId).setEmployeeId(commonUtil.getEmployeeId()));
-            return new SysPara(user.getUserId(), user.getEmployeeName(), user.getUserPassword(), user.getEmployeeId(), user.getEmployeeName(), user.getAccessToken());
+            return new SysPara(ddTenantId, user.getUserId(), user.getEmployeeName(), user.getUserPassword(), user.getEmployeeId(), user.getEmployeeName(), user.getAccessToken());
         }
-        return new SysPara();
+        return new SysPara(ddTenantId);
     }
 
-    public SysPara initSysPara(String ddTenantId,String entityName){
-        if (commonUtil.getUseToken().equalsIgnoreCase("yes")){
+    public SysPara initSysPara(String ddTenantId, String entityName) {
+        if (commonUtil.getUseToken().equalsIgnoreCase("yes")) {
             User user = userUtil.getUser(new User().setDdTenantId(ddTenantId).setEmployeeId(commonUtil.getEmployeeId()));
-            return new SysPara(user.getUserId(), user.getEmployeeName(), user.getUserPassword(), user.getEmployeeId(), user.getEmployeeName(), user.getAccessToken(),entityName);
+            return new SysPara(ddTenantId, user.getUserId(), user.getEmployeeName(), user.getUserPassword(), user.getEmployeeId(), user.getEmployeeName(), user.getAccessToken(), entityName);
         }
-        return new SysPara();
+        return new SysPara(ddTenantId);
     }
 
 }
