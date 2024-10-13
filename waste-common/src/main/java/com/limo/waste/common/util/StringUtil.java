@@ -1,11 +1,13 @@
 package com.limo.waste.common.util;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * @author chenwenwen
- * @date 2024/6/15 15:58
- * @description: 字符串工具包
+ * @Date 2024/6/15 15:58
+ * @Description: 字符串工具包
  */
 public class StringUtil {
 
@@ -68,6 +70,13 @@ public class StringUtil {
     @Override
     public int hashCode() {
         return java.util.Arrays.hashCode(value);
+    }
+
+
+    public static boolean containAll(String value1,String value2,String split){
+        List<String> values1 = Arrays.asList(value1.split(split));
+        List<String> values2 = Arrays.asList(value2.split(split));
+        return values1.containsAll(values2);
     }
 
 }

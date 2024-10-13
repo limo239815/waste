@@ -6,3 +6,19 @@ records.stream()
             .map(Record::getCategory)
             .distinct()
             .count()
+//获取某一列得值
+List<String> names = persons.stream()
+                            .map(Person::getName)
+                            .collect(Collectors.toList());
+//找到name值不为null的一行，返回name值
+Optional<String> firstName = persons.stream()
+                .filter(person -> person.getName() != null) // 过滤出name不为null的Person
+                .map(Person::getName) // 将Person对象映射为name字符串
+                .findFirst()
+
+ String floorId = String.join(",", floors.stream().map(Floor::getFloorId).collect(Collectors.toSet()));
+
+ /**
+      * 查询母轨最大最小点位
+      * SELECT  x,min(y),max(y) from loc where DD_TENANT_ID=#ddTenantId and storehouse_id=#storehouseId and POSITION_TYPE_ID='T' GROUP BY x
+      * */

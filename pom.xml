@@ -203,6 +203,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <distributionManagement>
+        <repository>
+            <id>magic-store</id>
+            <name>magic-store</name>
+            <url>http://47.100.125.240:9091/repository/magic-store/</url>
+        </repository>
+    </distributionManagement>
     <build>
         <defaultGoal>compile</defaultGoal>
         <plugins>

@@ -384,4 +384,10 @@ public class RedisServiceImpl implements RedisService {
             return null;
         }
     }
+
+    public boolean checkList(String listKey) {
+        // 获取 list 的长度
+        Long listLength = redisTemplate.opsForList().size(listKey);
+        return listLength != null && listLength > 0;
+    }
 }

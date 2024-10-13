@@ -1,18 +1,16 @@
 package com.limo.waste.grpc.util;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/* 貌似会死循环
+/* 非注解方式获取
 import java.io.InputStream;
 import java.util.Properties;*/
 
 /**
  * @Author limo
  * @Date 2024/6/27 15:53
- * @Description:
+ * @Description: 获取配置文件属性
  */
 @Component
 public class CommonUtil {
@@ -40,7 +38,7 @@ public class CommonUtil {
     public String getGoUrl() {
         return goUrl;
     }
-    /* 貌似会死循环
+    /* 非注解方式获取
    public CommonUtil() {
         // 加载配置文件
         Properties properties = new Properties();

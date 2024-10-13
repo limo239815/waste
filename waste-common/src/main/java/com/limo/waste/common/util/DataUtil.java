@@ -1,6 +1,5 @@
 package com.limo.waste.common.util;
 
-import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +8,8 @@ import java.util.Map;
 /**
  * @author chenwenwen
  * @version V1.0.0
- * @date 2023/5/10 17:23
- * @description 返回值数据转换
+ * @Date 2023/5/10 17:23
+ * @Description 返回值数据转换
  */
 public class DataUtil {
 

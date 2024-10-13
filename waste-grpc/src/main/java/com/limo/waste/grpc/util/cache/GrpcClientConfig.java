@@ -16,10 +16,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcClientConfig {
 
-    @Value(UrlConstant.COMMON_QUERY_URL)
+    @Value("${commonQueryUrl}")
     private String commonQueryAddress;
 
-    @Value(UrlConstant.COMMON_UPDATE_URL)
+    @Value("${commonUpdateUrl}")
     private String commonUpdateAddress;
 
     @Bean

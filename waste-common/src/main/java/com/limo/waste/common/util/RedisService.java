@@ -204,4 +204,8 @@ public interface RedisService {
      * @return 对象
      */
     Set<String> getKeys(final String prefix);
+    /**
+     * 是否有值
+     * */
+    boolean checkList(String listKey);
 }

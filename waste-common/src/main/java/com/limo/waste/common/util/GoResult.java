@@ -4,10 +4,9 @@ package com.limo.waste.common.util;
 import lombok.Data;
 
 /**
- * @author chenwenwen
- * @version V1.0.0
- * @date 2023/5/10 9:00
- * @description go结果
+ * @Author limo
+ *
+ * @Description go结果
  */
 @Data
 public class GoResult<T> {

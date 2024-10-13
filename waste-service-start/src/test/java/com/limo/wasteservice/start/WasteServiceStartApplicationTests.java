@@ -88,4 +88,41 @@ class WasteServiceStartApplicationTests {
 
     }
 
+    public static void main(String[] args) {
+        String javaForLoop = "for (int i = 0; i < 5; i++) { System.out.println(i); }";
+        String pythonForLoop = convertForLoopToPython(javaForLoop);
+        System.out.println(pythonForLoop);
+    }
+
+    public static String convertForLoopToPython(String javaForLoop) {
+        // 假设Java循环格式为: for (int i = 0; i < N; i++)
+        // 该方法仅处理简单的for循环，不支持复杂条件
+
+        // 提取循环变量、起始值、条件、增量
+        String loopHeader = javaForLoop.substring(javaForLoop.indexOf('(') + 1, javaForLoop.indexOf(')'));
+        String[] parts = loopHeader.split(";");
+
+        // 提取起始值 (int i = 0)
+        String[] initPart = parts[0].trim().split(" ");
+        String varName = initPart[1];
+        String startValue = initPart[3];
+
+        // 提取结束条件 (i < N)
+        String endCondition = parts[1].trim();
+        String endValue = endCondition.substring(endCondition.indexOf('<') + 1).trim();
+
+        // 提取增量 (i++)
+        String increment = parts[2].trim();
+
+        // 生成Python的for循环
+        String pythonLoop = "for " + varName + " in range(" + startValue + ", " + endValue + "):";
+
+        // 处理循环体
+        String body = javaForLoop.substring(javaForLoop.indexOf('{') + 1, javaForLoop.lastIndexOf('}')).trim();
+        pythonLoop += "\n    " + body.replace("System.out.println", "print").replace(";", "");
+
+        return pythonLoop;
+    }
+
+
 }

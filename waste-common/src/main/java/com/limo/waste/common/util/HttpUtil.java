@@ -38,7 +38,7 @@ public class HttpUtil {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             response = new ResponseEntity<>(status);
         }
-        log.info("请求返回结果：{}", response);
+        log.info("请求地址：{}，请求结果：{}", url, response);
         return response;
     }
 
@@ -51,6 +51,8 @@ public class HttpUtil {
         try {
             response = restTemplate.postForEntity(url, entity, String.class);
             log.info("请求地址：{}，返回结果：{}", url, response.getStatusCode());
+            String result = response.getBody();
+            log.info("请求地址：{}，返回结果体：{}", url, result);
             if (response.getStatusCode() != HttpStatus.OK) {
                 return Result.fail(Result.FAIL_CODE, response.toString());
             }
@@ -60,7 +62,6 @@ public class HttpUtil {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             response = new ResponseEntity<>(status);
         }
-        log.info("请求地址：{}，返回结果：{}", url, response);
         return Result.fail(Result.FAIL_CODE, response.toString());
     }
 
@@ -72,17 +73,18 @@ public class HttpUtil {
         ResponseEntity<String> response;
         try {
             response = restTemplate.postForEntity(url, entity, String.class);
-            log.info("请求地址：{}，返回结果：{}", url, response);
+            log.info("请求地址：{}，返回结果：{}", url, response.getStatusCode());
+            String result = response.getBody();
+            log.info("请求地址：{}，返回结果体：{}", url, result);
             if (response.getStatusCode() != HttpStatus.OK) {
                 return Result.fail(Result.FAIL_CODE, response.toString());
             }
-            return JSON.parseObject(response.getBody(), Result.class);
+            return JSON.parseObject(result, Result.class);
         } catch (Exception e) {
             log.error("请求异常：{}", e.getMessage());
             HttpStatus status = HttpStatus.BAD_REQUEST;
             response = new ResponseEntity<>(status);
         }
-        log.info("请求地址：{}，返回结果：{}", url, response);
         return Result.fail(Result.FAIL_CODE, response.toString());
     }
 
@@ -94,29 +96,30 @@ public class HttpUtil {
         ResponseEntity<String> response;
         try {
             response = restTemplate.postForEntity(url, entity, String.class);
-            log.info("请求地址：{}，返回结果：{}", url, response);
+            log.info("请求地址：{}，返回结果：{}", url, response.getStatusCode());
+            String result = response.getBody();
+            log.info("请求地址：{}，返回结果体：{}", url, result);
             if (response.getStatusCode() != HttpStatus.OK) {
                 return Result.fail(Result.FAIL_CODE, response.toString());
             }
             String body = response.getBody();
-            GoResult<?> result = JSON.parseObject(body, GoResult.class);
-            if (result == null || !StringUtils.hasLength(result.getResultCode())) {
+            GoResult<?> resultForGo = JSON.parseObject(body, GoResult.class);
+            if (result == null || !StringUtils.hasLength(resultForGo.getResultCode())) {
                 Map bodyM = JSON.parseObject(body,Map.class);
                 if (!CollectionUtils.isEmpty(bodyM)&&bodyM.containsKey("errorMessage")){
                     return Result.fail(Result.FAIL_CODE, "请求失败：" + bodyM.get("errorMessage"));
                 }
                 return Result.fail(Result.FAIL_CODE, "请求失败：" + body);
             }
-            if (GoResult.FAIL_CODE.equals(result.getResultCode())) {
-                return Result.fail(Result.FAIL_CODE, result.getResultMsg(), result.getResultValue());
+            if (GoResult.FAIL_CODE.equals(resultForGo.getResultCode())) {
+                return Result.fail(Result.FAIL_CODE, resultForGo.getResultMsg(), resultForGo.getResultValue());
             }
-            return Result.success(Result.SUCCESS_CODE, result.getResultMsg(), result.getResultValue());
+            return Result.success(Result.SUCCESS_CODE, resultForGo.getResultMsg(), resultForGo.getResultValue());
         } catch (Exception e) {
             log.error("请求异常：{}", e.getMessage());
             HttpStatus status = HttpStatus.BAD_REQUEST;
             response = new ResponseEntity<>(status);
         }
-        log.info("请求地址：{}，返回结果：{}", url, response);
         return Result.fail(Result.FAIL_CODE, response.toString());
     }
 }
