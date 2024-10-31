@@ -1,10 +1,7 @@
 messageBusUrl: http://localhost:8012/api/msg/bus/send
 ddTenantId: "00000"
-goUrl: http://47.100.125.240:9800/ddapi/outerService/request
 employeeId: "SHOP_INTERFACE"
 useToken: "yes"
-commonQueryUrl: "47.100.125.240:50052"
-commonUpdateUrl: "47.100.125.240:9004"
 spring:
   redis:
     host: 47.100.125.240

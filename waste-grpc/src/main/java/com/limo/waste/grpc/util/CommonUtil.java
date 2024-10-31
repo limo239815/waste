@@ -20,8 +20,6 @@ public class CommonUtil {
     private String employeeId;
     @Value("${useToken}")
     private String useToken;
-    @Value("${goUrl}")
-    private String goUrl;
 
     public String getUseToken() {
         return useToken;
@@ -35,30 +33,8 @@ public class CommonUtil {
         return defaultDdTenantId;
     }
 
-    public String getGoUrl() {
-        return goUrl;
+    public String getUrl() {
+        return "http://127.0.0.1:9800/ddapi/outerService/request";
     }
-    /* 非注解方式获取
-   public CommonUtil() {
-        // 加载配置文件
-        Properties properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.yaml")) {
-            if (input != null) {
-                properties.load(input);
 
-                // 设置字段值
-                this.defaultDdTenantId = properties.getProperty("ddTenantId").replace("\"","");
-                this.employeeId = properties.getProperty("employeeId").replace("\"","");
-                this.useToken = properties.getProperty("useToken").replace("\"","");
-                this.goUrl = properties.getProperty("goUrl").replace("\"","");
-            } else {
-                log.error("无法找到application.yaml文件");
-                this.defaultDdTenantId = "00000";
-                this.employeeId = "location@126.com";
-                this.useToken = "no";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 }

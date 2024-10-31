@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.entity.CommonQueryParam;
 import com.limo.waste.grpc.entity.CommonQueryResult;
-import com.limo.waste.grpc.entity.SysPara;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,11 @@ public class CommonQueryServiceImpl implements CommonQueryService {
 
     @Override
     public CommonQueryResult queryAll(CommonQueryParam param) {
+        return findList(param);
+
+    }
+
+    private CommonQueryResult findList(CommonQueryParam param){
         OfbizCommonRequest request = OfbizCommonRequest.newBuilder()
                 .setCommonData(new Gson().toJson(param)).build();
         try {
@@ -38,6 +42,6 @@ public class CommonQueryServiceImpl implements CommonQueryService {
             ex.printStackTrace();
             return new CommonQueryResult();
         }
-
     }
+
 }

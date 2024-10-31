@@ -16,23 +16,32 @@ import javax.annotation.Resource;
 public class CommonUpdateParamUtil {
 
     @Resource
-    UserUtil userUtil;
+    private UserUtil userUtil;
 
     @Resource
-    CommonUtil commonUtil;
+    private CommonUtil commonUtil;
 
-    public CommonUpdateParam initCommonUpdateParam(String ddTenantId, String billTypeId, String billTypeName, String operateType){
-        if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = commonUtil.getDefaultDdTenantId();
-        }
-        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
-        return new CommonUpdateParam(ddTenantId,billTypeId,billTypeName,operateType,userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(),userLogin.getAccessToken());
+    public CommonUpdateParam initCommonUpdateParam(String ddTenantId, String billTypeId, String billTypeName, String operateType) {
+        return getUpdateParam(ddTenantId, billTypeId, billTypeName, operateType, true);
     }
-    public CommonUpdateParam initCommonDeleteParam(String ddTenantId,String billTypeId,String billTypeName,String operateType){
-        if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId =commonUtil.getDefaultDdTenantId();
+
+    public CommonUpdateParam initCommonDeleteParam(String ddTenantId, String billTypeId, String billTypeName, String operateType) {
+        return getUpdateParam(ddTenantId, billTypeId, billTypeName, operateType, false);
+    }
+
+    private CommonUpdateParam getUpdateParam(String ddTenantId, String billTypeId, String billTypeName, String operateType, boolean update) {
+        if (update) {
+            if (!StringUtils.hasLength(ddTenantId)) {
+                ddTenantId = commonUtil.getDefaultDdTenantId();
+            }
+            UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
+            return new CommonUpdateParam(ddTenantId, billTypeId, billTypeName, operateType, userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(), userLogin.getAccessToken());
+        } else {
+            if (!StringUtils.hasLength(ddTenantId)) {
+                ddTenantId = commonUtil.getDefaultDdTenantId();
+            }
+            UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
+            return new CommonUpdateParam().getCommonDeleteParam(ddTenantId, billTypeId, billTypeName, operateType, userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(), userLogin.getAccessToken());
         }
-        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
-        return new CommonUpdateParam().getCommonDeleteParam(ddTenantId,billTypeId,billTypeName,operateType,userLogin.getUserLoginId(), userLogin.getUserLoginName(), userLogin.getWareHouseId(),userLogin.getAccessToken());
     }
 }

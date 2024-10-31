@@ -31,8 +31,12 @@ public class UserUtil {
 
     /**
      * 获取用户
-     * */
-    public User getUser(User query){
+     */
+    public User getUser(User query) {
+        return initUser(query);
+    }
+
+    private User initUser(User query){
         User user = new User();
         CommonQueryParam param = new CommonQueryParam();
         SysPara sysPara = new SysPara(query.getDdTenantId(), query.getClass().getSimpleName());
@@ -69,8 +73,8 @@ public class UserUtil {
 
     /**
      * 获取用户
-     * */
-    public WareHouse getWarehouse(String ddTenantId){
+     */
+    private WareHouse getWarehouse(String ddTenantId) {
         WareHouse warehouse = new WareHouse();
         CommonQueryParam param = new CommonQueryParam();
         SysPara sysPara = sysParaUtil.initSysPara(ddTenantId, WareHouse.class.getSimpleName());
@@ -91,30 +95,26 @@ public class UserUtil {
         return warehouse;
     }
 
-    public UserLogin initUserLogin(String ddTenantId,String employeeId){
-        if (!StringUtils.hasLength(ddTenantId)){
+    private UserLogin initUserLogin(String ddTenantId, String employeeId) {
+        if (!StringUtils.hasLength(ddTenantId)) {
             ddTenantId = commonUtil.getDefaultDdTenantId();
         }
-        if (commonUtil.getUseToken().equalsIgnoreCase("yes")){
-            User user = getUser(new User().setEmployeeId(employeeId).setDdTenantId(ddTenantId));
+        if (commonUtil.getUseToken().equalsIgnoreCase("yes")) {
+            User user;
+            if (StringUtils.hasLength(employeeId)) {
+                user = getUser(new User().setEmployeeId(employeeId).setDdTenantId(ddTenantId));
+            } else {
+                user = getUser(new User().setEmployeeId(commonUtil.getEmployeeId()).setDdTenantId(ddTenantId));
+            }
             WareHouse warehouse = getWarehouse(ddTenantId);
-            return new UserLogin(ddTenantId,user.getUserId(), user.getEmployeeName(), user.getAccessToken(), warehouse.getWareHouseId(), warehouse.getWareHouseName());
+            return new UserLogin(ddTenantId, user.getUserId(), user.getEmployeeName(), user.getAccessToken(), warehouse.getWareHouseId(), warehouse.getWareHouseName());
         }
         return new UserLogin(ddTenantId);
     }
 
-    public UserLogin initUserLogin(String ddTenantId){
-        if (!StringUtils.hasLength(ddTenantId)){
-            ddTenantId = commonUtil.getDefaultDdTenantId();
-        }
-        if (commonUtil.getUseToken().equalsIgnoreCase("yes")){
-            User user = getUser(new User().setEmployeeId(commonUtil.getEmployeeId()).setDdTenantId(ddTenantId));
-            WareHouse warehouse = getWarehouse(ddTenantId);
-            return new UserLogin(ddTenantId,user.getUserId(), user.getEmployeeName(), user.getAccessToken(), warehouse.getWareHouseId(), warehouse.getWareHouseName());
-        }
-        return new UserLogin(ddTenantId);
+    public UserLogin initUserLogin(String ddTenantId) {
+        return initUserLogin(ddTenantId, "");
     }
-
 
 
 }

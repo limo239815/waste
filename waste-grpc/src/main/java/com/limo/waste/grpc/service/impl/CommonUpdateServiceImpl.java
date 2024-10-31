@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * @Author
- * @Date 2023/7/7 9:47
+ * @Date
  * @Description 通用更新服务
  */
 @Service
@@ -63,6 +63,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> update(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
+        return commonUpdate(tag, currUuid, entityName, ddTenantId, sql);
+    }
+
+    private Result<Boolean> commonUpdate(String tag, String currUuid, String entityName, String ddTenantId, String sql) {
         try {
             //获取组别
             String key = "";
@@ -117,20 +121,24 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     }
 
     public Result<Boolean> commitByBillService(UserLogin userLogin) {
-        //调用go服务执行sql CommitOperateReq
+        return commit(userLogin);
+    }
+
+    private Result<Boolean> commit(UserLogin userLogin) {
         bill.service.v1.CommitOperateReq reqParam = bill.service.v1.CommitOperateReq.newBuilder().setUserLogin(new Gson().toJson(userLogin)).build();
-        log.info("更新参数：{}", reqParam);
         bill.service.v1.CommitOperateResp resp = billService.commitOperate(reqParam);
         if (resp.getResponseMessage().equals("success")) {
-            log.info("更新完成");
             return Result.success();
         }
-        log.error("更新失败：{}", resp.getErrorMessage());
         return Result.fail(Result.FAIL_CODE, resp.getErrorMessage());
     }
 
     @Override
     public Result<String> commonSaveBillService(String billTypeId, Map<String, Object> order, Map<String, List<Map<String, Object>>> orderItem, UserLogin userLogin) {
+        return save(billTypeId, order, orderItem, userLogin);
+    }
+
+    private Result<String> save(String billTypeId, Map<String, Object> order, Map<String, List<Map<String, Object>>> orderItem, UserLogin userLogin) {
         String billJson = new Gson().toJson(order);
         String billItemJson = "{}";
         if (!CollectionUtils.isEmpty(orderItem)) {
@@ -145,7 +153,6 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setUserLogin(userLoginStr)
                 .build();
         bill.service.v1.SaveBillResp saveBillResp = billService.commonSaveBillV2(saveBillReq);
-        log.info("请求commonSaveBillV2结果：{}", new Gson().toJson(saveBillResp));
         if (saveBillResp.getResponseMessage().equals("error")) {
             return Result.fail(Result.FAIL_CODE, saveBillResp.getErrorMessage());
         }
@@ -153,6 +160,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
     }
 
     public Result<Boolean> commonDeleteBillService(String billTypeId, String billId, UserLogin userLogin) {
+        return delete(billTypeId, billId, userLogin);
+    }
+
+    private Result<Boolean> delete(String billTypeId, String billId, UserLogin userLogin) {
         String userLoginStr = new Gson().toJson(userLogin);
         bill.service.v1.DeleteBillReq deleteBillReq = bill.service.v1.DeleteBillReq.newBuilder()
                 .setBillId(billId)
@@ -160,7 +171,6 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setUserLogin(userLoginStr)
                 .build();
         bill.service.v1.DeleteBillResp deleteBillResp = billService.commonDeleteBillV2(deleteBillReq);
-        log.info("请求commonDeleteBillV2结果：{}", new Gson().toJson(deleteBillResp));
         if (deleteBillResp.getResponseMessage().equals("error")) {
             return Result.fail(Result.FAIL_CODE, deleteBillResp.getErrorMessage());
         }
@@ -169,6 +179,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> autoSendAudit(String msgId, String ddTenantId, List<String> billIds, String billTypeId, String billTypeName) {
+        return check(msgId, ddTenantId, billIds, billTypeId, billTypeName);
+    }
+
+    private Result<Boolean> check(String msgId, String ddTenantId, List<String> billIds, String billTypeId, String billTypeName) {
         List<Map<String, Object>> billIdList = new ArrayList<>();
         for (String billId : billIds) {
             Map<String, Object> billIdMap = new HashMap<>();
@@ -187,6 +201,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> unCheck(String msgId, String ddTenantId, List<String> billIds, String billTypeId, String billTypeName) {
+        return antiAudit(msgId, ddTenantId, billIds, billTypeId, billTypeName);
+    }
+
+    private Result<Boolean> antiAudit(String msgId, String ddTenantId, List<String> billIds, String billTypeId, String billTypeName) {
         List<Map<String, Object>> billIdList = new ArrayList<>();
         for (String billId : billIds) {
             Map<String, Object> billIdMap = new HashMap<>();
@@ -203,8 +221,13 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         return sendMessageUtil.send(MessageBusEnum.AUTO_CHECK, msgId, new Gson().toJson(autoCheckParam));
     }
 
+
     @Override
     public Result<Boolean> orderDelete(String msgId, String ddTenantId, String billId, String billTypeId, String billTypeName, Map<String, Object> billJson, String itemEntityId, List<Map<String, Object>> billJsonItem) {
+        return delete(msgId, ddTenantId, billId, billTypeId, billTypeName, billJson, itemEntityId, billJsonItem);
+    }
+
+    private Result<Boolean> delete(String msgId, String ddTenantId, String billId, String billTypeId, String billTypeName, Map<String, Object> billJson, String itemEntityId, List<Map<String, Object>> billJsonItem) {
         String billItemJson = "{}";
         Map<String, List<Map<String, Object>>> mapWorkOrderItem = new HashMap<>();
         if (StringUtils.hasLength(itemEntityId)) {
@@ -221,6 +244,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> orderDelete(boolean commit, String currUuid, String ddTenantId, List<String> billIds, String billTypeId) {
+        return delete(commit, currUuid, ddTenantId, billIds, billTypeId);
+    }
+
+    private Result<Boolean> delete(boolean commit, String currUuid, String ddTenantId, List<String> billIds, String billTypeId) {
         UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         if (!StringUtils.hasLength(currUuid)) {
             currUuid = IDUtils.getUuid("location:");
@@ -229,7 +256,6 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
         for (String billId : billIds) {
             Result<Boolean> result = commonDeleteBillService(billTypeId, billId, userLogin);
             if (Result.FAIL_CODE.equals(result.getResultCode())) {
-                log.error("单据删除失败：{}，单据类型：{}，单号：{}", result.getResultMessage(), billTypeId, billId);
                 return result;
             }
         }
@@ -241,6 +267,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> orderUpdate(boolean commit, String currUuid, String tag, String entityName, String ddTenantId, List<String> sqlList) {
+        return update(commit, currUuid, tag, entityName, ddTenantId, sqlList);
+    }
+
+    private Result<Boolean> update(boolean commit, String currUuid, String tag, String entityName, String ddTenantId, List<String> sqlList) {
         if (CollectionUtils.isEmpty(sqlList)) {
             return Result.success();
         }
@@ -263,6 +293,10 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<String> orderSaveReturnPrimaryKey(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
+        return save(entityId, itemEntityId, ddTenantId, mapWorkOrder, listWorkOrderItem, initStatus);
+    }
+
+    private Result<String> save(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
         UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
         String currUuid = IDUtils.getUuid("location:");
         userLogin.setCurrUuid(currUuid);
@@ -295,36 +329,21 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
 
     @Override
     public Result<Boolean> orderSave(String entityId, String itemEntityId, String ddTenantId, Map<String, Object> mapWorkOrder, List<Map<String, Object>> listWorkOrderItem, boolean initStatus) {
-        UserLogin userLogin = userUtil.initUserLogin(ddTenantId);
-        String currUuid = IDUtils.getUuid("location:");
-        userLogin.setCurrUuid(currUuid);
-        mapWorkOrder.put("userId", userLogin.getUserLoginId());
-        mapWorkOrder.put("userName", userLogin.getUserLoginName());
-        mapWorkOrder.put("operateUserId", userLogin.getUserLoginId());
-        mapWorkOrder.put("operateUserName", userLogin.getUserLoginName());
-        Map<String, List<Map<String, Object>>> mapWorkOrderItem = new HashMap<>();
-        if (StringUtils.hasLength(itemEntityId)) {
-            mapWorkOrderItem.put(itemEntityId, listWorkOrderItem);
+        Result<String> result = save(entityId, itemEntityId, ddTenantId, mapWorkOrder, listWorkOrderItem, initStatus);
+        if (Result.FAIL_CODE.equals(result.getResultCode())) {
+            return Result.fail(Result.FAIL_CODE, result.getResultMessage());
         }
-        Result<String> ResultForSave = commonSaveBillService(entityId, mapWorkOrder, mapWorkOrderItem, userLogin);
-        if (Result.FAIL_CODE.equals(ResultForSave.getResultCode())) {
-            return Result.fail(Result.FAIL_CODE, ResultForSave.getResultMessage());
-        }
-        if (initStatus) {
-            String[] value = ResultForSave.getResultValue().split(":");
-            String updateSql = "update " + TypeTransferUtil.camelToSnake(entityId) + " set status_id='INIT',status_name='草稿' where " + TypeTransferUtil.camelToSnake(value[0]) + "='" + value[1] + "' and dd_tenant_id='" + ddTenantId + "'";
-            Result<Boolean> result = update(currUuid, entityId, ddTenantId, updateSql);
-            if (Result.FAIL_CODE.equals(result.getResultCode())) {
-                return Result.fail(Result.FAIL_CODE, result.getResultMessage());
-            }
-        }
-        return commitByBillService(userLogin);
+        return Result.success();
     }
 
     @Override
-    public <H,I> Result<Boolean> orderSaveByFlow(OrderOperateParam<H,I> order) {
-        Map<String,Object> billItemJson = new HashMap<>();
-        billItemJson.put(order.getItemEntityId(),TypeTransferUtil.toMapList(order.getItems()));
+    public <H, I> Result<Boolean> orderSaveByFlow(OrderOperateParam<H, I> order) {
+        return save(order);
+    }
+
+    private <H, I> Result<Boolean> save(OrderOperateParam<H, I> order) {
+        Map<String, Object> billItemJson = new HashMap<>();
+        billItemJson.put(order.getItemEntityId(), TypeTransferUtil.toMapList(order.getItems()));
         UserLogin userLogin = userUtil.initUserLogin(order.getDdTenantId());
         OrderOperateByFlowParam param = new OrderOperateByFlowParam()
                 .setBillTypeId(order.getBillTypeId())
@@ -335,13 +354,13 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setAccessToken(userLogin.getAccessToken())
                 .setAppKey(userLogin.getAppKey())
                 .setSecret(userLogin.getSecret())
-                .setTenantId(StringUtils.hasLength(order.getDdTenantId())?order.getDdTenantId():commonUtil.getDefaultDdTenantId())
+                .setTenantId(StringUtils.hasLength(order.getDdTenantId()) ? order.getDdTenantId() : commonUtil.getDefaultDdTenantId())
                 .setWareHouseId(userLogin.getWareHouseId())
                 .setBillJson(new Gson().toJson(TypeTransferUtil.toMap(order.getBill())))
                 .setBillItemJson(new Gson().toJson(billItemJson));
-        Result<?> result = httpUtil.postForBill(commonUtil.getGoUrl(),new Gson().toJson(param));
-        if (Result.FAIL_CODE.equals(result.getResultCode())){
-            return Result.fail(result.getResultCode(),result.getResultMessage());
+        Result<?> result = httpUtil.postForBill(commonUtil.getUrl(), new Gson().toJson(param));
+        if (Result.FAIL_CODE.equals(result.getResultCode())) {
+            return Result.fail(result.getResultCode(), result.getResultMessage());
         }
         return Result.success();
     }
