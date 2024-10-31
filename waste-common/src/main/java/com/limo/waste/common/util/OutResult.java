@@ -9,7 +9,7 @@ import lombok.Data;
  * @Description go结果
  */
 @Data
-public class GoResult<T> {
+public class OutResult<T> {
 
     public static final String SUCCESS_CODE = "1";
     //成功但不可达
@@ -31,66 +31,66 @@ public class GoResult<T> {
      */
     private T resultValue;
 
-    private GoResult() {
+    private OutResult() {
     }
 
-    public static <T> GoResult<T> success() {
-        GoResult<T> result = new GoResult<>();
+    public static <T> OutResult<T> success() {
+        OutResult<T> result = new OutResult<>();
         result.setResultCode(SUCCESS_CODE);
         result.setResultMsg(SUCCESS_MESSAGE);
         return result;
     }
 
-    public static <T> GoResult<T> success(T data) {
-        GoResult<T> result = success();
+    public static <T> OutResult<T> success(T data) {
+        OutResult<T> result = success();
         result.setResultValue(data);
         return result;
     }
 
-    public static <T> GoResult<T> success(String message, T data) {
-        GoResult<T> result = success();
+    public static <T> OutResult<T> success(String message, T data) {
+        OutResult<T> result = success();
         result.setResultMsg(message);
         result.setResultValue(data);
         return result;
     }
 
-    public static <T> GoResult<T> success(String code, String message, T data) {
-        GoResult<T> result = new GoResult<>();
+    public static <T> OutResult<T> success(String code, String message, T data) {
+        OutResult<T> result = new OutResult<>();
         result.setResultCode(code);
         result.setResultMsg(message);
         result.setResultValue(data);
         return result;
     }
 
-    public static <T> GoResult<T> fail() {
-        GoResult<T> result = new GoResult<>();
+    public static <T> OutResult<T> fail() {
+        OutResult<T> result = new OutResult<>();
         result.setResultCode(FAIL_CODE);
         result.setResultMsg(FAIL_MESSAGE);
         return result;
     }
 
-    public static <T> GoResult<T> fail(T data) {
-        GoResult<T> result = fail();
+    public static <T> OutResult<T> fail(T data) {
+        OutResult<T> result = fail();
         result.setResultValue(data);
         return result;
     }
 
-    public static <T> GoResult<T> fail(String message, T data) {
-        GoResult<T> result = fail();
+    public static <T> OutResult<T> fail(String message, T data) {
+        OutResult<T> result = fail();
         result.setResultMsg(message);
         result.setResultValue(data);
         return result;
     }
 
-    public static <T> GoResult<T> fail(String code, String message) {
-        GoResult<T> result = fail();
+    public static <T> OutResult<T> fail(String code, String message) {
+        OutResult<T> result = fail();
         result.setResultCode(code);
         result.setResultMsg(message);
         return result;
     }
 
-    public static <T> GoResult<T> fail(String code, String message, T data) {
-        GoResult<T> result = new GoResult<>();
+    public static <T> OutResult<T> fail(String code, String message, T data) {
+        OutResult<T> result = new OutResult<>();
         result.setResultCode(code);
         result.setResultMsg(message);
         result.setResultValue(data);
