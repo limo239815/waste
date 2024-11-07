@@ -2,6 +2,7 @@ package com.limo.waste.grpc.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /* 非注解方式获取
 import java.io.InputStream;
@@ -20,6 +21,8 @@ public class CommonUtil {
     private String employeeId;
     @Value("${useToken}")
     private String useToken;
+    @Value("${ip}")
+    private String ip;
 
     public String getUseToken() {
         return useToken;
@@ -34,6 +37,9 @@ public class CommonUtil {
     }
 
     public String getUrl() {
+        if (StringUtils.hasLength(ip)){
+            return "http://"+ip+":9800/ddapi/outerService/request";
+        }
         return "http://127.0.0.1:9800/ddapi/outerService/request";
     }
 

@@ -358,7 +358,7 @@ public class CommonUpdateServiceImpl implements CommonUpdateService {
                 .setWareHouseId(userLogin.getWareHouseId())
                 .setBillJson(new Gson().toJson(TypeTransferUtil.toMap(order.getBill())))
                 .setBillItemJson(new Gson().toJson(billItemJson));
-        Result<?> result = httpUtil.postForBill(commonUtil.getUrl(), new Gson().toJson(param));
+        Result<?> result = httpUtil.postForOutResult(commonUtil.getUrl(), new Gson().toJson(param));
         if (Result.FAIL_CODE.equals(result.getResultCode())) {
             return Result.fail(result.getResultCode(), result.getResultMessage());
         }

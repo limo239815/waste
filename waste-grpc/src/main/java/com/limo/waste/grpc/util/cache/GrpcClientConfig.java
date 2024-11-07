@@ -3,8 +3,10 @@ package com.limo.waste.grpc.util.cache;
 import bill.service.v1.billGrpc;
 import com.common.query.grpc.OfbizCommonGrpc;
 import io.grpc.ManagedChannelBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 /**
  * @Author limo
@@ -13,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class GrpcClientConfig {
+
+    @Value("${ip}")
+    private String ip;
 
     @Bean
     public OfbizCommonGrpc.OfbizCommonBlockingStub getOfbizServerClient(){
@@ -26,10 +31,14 @@ public class GrpcClientConfig {
     }
 
     private String getAddress(boolean query){
+        String url = ip;
+        if (!StringUtils.hasLength(ip)){
+            url = "127.0.0.1";
+        }
         if (query){
-            return "127.0.0.1:50052";
+            return url+":50052";
         }else {
-            return "127.0.0.1:9004";
+            return url+":9004";
         }
     }
 }
