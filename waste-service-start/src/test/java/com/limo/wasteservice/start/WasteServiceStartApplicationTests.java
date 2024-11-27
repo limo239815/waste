@@ -4,10 +4,9 @@ import com.limo.waste.common.redis.RedisNewService;
 import com.limo.waste.database.dal.Column;
 import com.limo.waste.database.dal.DatabaseConfig;
 import com.limo.waste.database.dal.Table;
+import com.limo.waste.database.redis.RedisUtil;
 import com.limo.waste.database.service.ds.DatabaseInitializer;
-import com.limo.waste.grpc.entity.*;
 import com.limo.waste.grpc.service.CommonQueryService;
-import com.limo.waste.grpc.util.CommonUtil;
 import com.limo.waste.grpc.util.SysParaUtil;
 import com.limo.waste.grpc.util.UserUtil;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @SpringBootTest
@@ -27,12 +24,24 @@ class WasteServiceStartApplicationTests {
     @Resource
     RedisNewService redisNewService;
 
+
     @Test
     void test(){
             redisNewService.saveData("localhost","test","wao");
         System.out.println(redisNewService.getData("localhost","test"));
         redisNewService.saveData("47.100.125.240","test","wao");
         System.out.println(redisNewService.getData("47.100.125.240","test"));
+    }
+
+    @Resource
+    RedisUtil redisUtil;
+
+    @Test
+    void test6(){
+//        redisUtil.set(1,"test","waowao");
+//        System.out.println(redisUtil.get(1,"test"));
+        redisUtil.del(1,"test");
+        System.out.println(redisUtil.get(1,"test"));
     }
 
     @Resource
