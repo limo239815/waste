@@ -17,6 +17,18 @@ public class RedisNewService {
     @Resource
     private DynamicRedisConnectionFactory dynamicRedisConnectionFactory;
 
+    public void saveData(String host,int dbIndex, String key,String value){
+        LettuceConnectionFactory connectionFactory = dynamicRedisConnectionFactory.getConnectionFactory(host, dbIndex);
+        StringRedisTemplate redisTemplate = new StringRedisTemplate(connectionFactory);
+        redisTemplate.opsForValue().set(key,value);
+    }
+
+    public String getData(String host,int dbIndex, String key){
+        LettuceConnectionFactory connectionFactory = dynamicRedisConnectionFactory.getConnectionFactory(host, dbIndex);
+        StringRedisTemplate redisTemplate = new StringRedisTemplate(connectionFactory);
+        return redisTemplate.opsForValue().get(key);
+    }
+
     public void saveData(String host,String key,String value){
         LettuceConnectionFactory connectionFactory = dynamicRedisConnectionFactory.getConnectionFactory(host);
         StringRedisTemplate redisTemplate = new StringRedisTemplate(connectionFactory);

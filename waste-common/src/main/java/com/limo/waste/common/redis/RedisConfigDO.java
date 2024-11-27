@@ -18,4 +18,6 @@ public class RedisConfigDO {
 
     private String password;
 
+    private int dbIndex;
+
 }
