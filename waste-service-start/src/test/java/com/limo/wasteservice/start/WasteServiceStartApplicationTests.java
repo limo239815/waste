@@ -9,6 +9,7 @@ import com.limo.waste.database.service.ds.DatabaseInitializer;
 import com.limo.waste.grpc.service.CommonQueryService;
 import com.limo.waste.grpc.util.SysParaUtil;
 import com.limo.waste.grpc.util.UserUtil;
+import com.limo.waste.tcp.TCPServer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -24,6 +25,11 @@ class WasteServiceStartApplicationTests {
     @Resource
     RedisNewService redisNewService;
 
+    @Test
+    void test5(){
+        TCPServer tcpServer = new TCPServer();
+        tcpServer.init();
+    }
 
     @Test
     void test(){
