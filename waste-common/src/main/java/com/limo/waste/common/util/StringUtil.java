@@ -80,7 +80,7 @@ public class StringUtil {
         return values1.containsAll(values2);
     }
 
-    public boolean hasField(String fieldName,Class<?> clazz) throws NoSuchFieldException{
+    public static boolean hasField(String fieldName,Class<?> clazz) throws NoSuchFieldException{
         // 判断字段是否存在
         boolean fieldExists = false;
         try {
@@ -91,7 +91,7 @@ public class StringUtil {
         }
         return fieldExists;
     }
-    public <T> String hasFieldReturn(String fieldName,T entity) throws NoSuchFieldException, IllegalAccessException {
+    public static  <T> String hasFieldReturn(String fieldName,T entity) throws NoSuchFieldException, IllegalAccessException {
         String result;
         // 判断字段是否存在
         Class<?> clazz = entity.getClass();
