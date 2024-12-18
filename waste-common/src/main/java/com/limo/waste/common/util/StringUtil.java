@@ -1,11 +1,12 @@
 package com.limo.waste.common.util;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 /**
- * @author chenwenwen
+ * @author
  * @Date 2024/6/15 15:58
  * @Description: 字符串工具包
  */
@@ -79,4 +80,27 @@ public class StringUtil {
         return values1.containsAll(values2);
     }
 
+    public boolean hasField(String fieldName,Class<?> clazz) throws NoSuchFieldException{
+        // 判断字段是否存在
+        boolean fieldExists = false;
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            fieldExists = true;
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return fieldExists;
+    }
+    public <T> String hasFieldReturn(String fieldName,T entity) throws NoSuchFieldException, IllegalAccessException {
+        String result;
+        // 判断字段是否存在
+        Class<?> clazz = entity.getClass();
+        Field field = clazz.getDeclaredField(fieldName);
+        // 设置可访问性（如果字段是私有的）
+        field.setAccessible(true);
+
+        // 返回字段的值
+        result = (String) field.get(entity);
+        return result;
+    }
 }
