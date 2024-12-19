@@ -1,6 +1,7 @@
 package com.limo.waste.common.util;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -102,5 +103,21 @@ public class StringUtil {
         // 返回字段的值
         result = (String) field.get(entity);
         return result;
+    }
+    public static List<String> getSameItems(String s1, String s2, String regex){
+        List<String> l1 = Arrays.asList(s1.split(regex));
+        List<String> l2 = Arrays.asList(s2.split(regex));
+        l1.retainAll(l2);
+        return l1;
+    }
+    public static <T> List<T> getSameItems(List<T> l1, List<T> l2){
+        List<T> newList = new ArrayList<>(l1);
+        newList.retainAll(l2);
+        return newList;
+    }
+    public static boolean containsAll(String s1, String s2, String regex){
+        List<String> l1 = Arrays.asList(s1.split(regex));
+        List<String> l2 = Arrays.asList(s2.split(regex));
+        return l1.containsAll(l2);
     }
 }
