@@ -44,7 +44,7 @@ public class HttpUtil {
     }
 
     public ResponseEntity<String> post(String url, String data, Map<String, String> headerValue) {
-        log.info("请求地址：{}，请求参数：{}", url, data);
+        log.info("请求地址：{}，请求参数：{}，请求头：{}", url, data, headerValue);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
         for (String key : headerValue.keySet()) {
@@ -87,7 +87,7 @@ public class HttpUtil {
     }
 
     public Result<Boolean> postForNoData(String url, String data, Map<String, String> headerValue) {
-        log.info("请求地址：{}，请求参数：{}", url, data);
+        log.info("请求地址：{}，请求参数：{}，请求头：{}", url, data, headerValue);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
         for (String key : headerValue.keySet()) {
@@ -113,7 +113,7 @@ public class HttpUtil {
     }
 
     public Result<?> postForResult(String url, String data, Map<String, String> headerValue) {
-        log.info("请求地址：{}，请求参数：{}", url, data);
+        log.info("请求地址：{}，请求参数：{}，请求头：{}", url, data, headerValue);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
         for (String key : headerValue.keySet()) {
@@ -162,7 +162,7 @@ public class HttpUtil {
     }
 
     public Result<?> postForOutResult(String url, String data, Map<String, String> headerValue) {
-        log.info("请求地址：{}，请求参数：{}", url, data);
+        log.info("请求地址：{}，请求参数：{}，请求头：{}", url, data, headerValue);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
         for (String key : headerValue.keySet()) {
